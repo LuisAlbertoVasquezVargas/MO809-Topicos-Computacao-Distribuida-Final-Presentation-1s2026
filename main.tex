@@ -1,0 +1,108 @@
+\documentclass[xcolor={dvipsnames}]{beamer}
+
+% ==========================================
+% 1. CONFIGURATION
+% ==========================================
+\newcommand{\MyTitle}{A Data Structure Perspective to the \\ \small RDD-based Apriori Algorithm on Spark}
+\newcommand{\MyShortTitle}{Apriori on Spark}
+\newcommand{\MyAuthor}{Luis Alberto Vásquez Vargas}
+\newcommand{\MyShortAuthor}{Luis Vásquez}
+\newcommand{\MyInstitute}{IC -- UNICAMP} 
+\newcommand{\MyDate}{March 31, 2026} 
+
+% --- COLOR PALETTE ---
+\definecolor{PrimaryColor}{HTML}{141B41}    % Space Indigo
+\definecolor{SecondaryColor}{HTML}{306BAC}  % Ocean Deep
+\definecolor{AccentColor}{HTML}{6F9CEB}     % Cornflower Blue
+\definecolor{LightAccent}{HTML}{98B9F2}     % Baby Blue Ice
+\definecolor{AlertColor}{HTML}{918EF4}      % Soft Periwinkle
+
+% ==========================================
+% 2. THEME SETUP
+% ==========================================
+\mode<presentation>
+{
+  \usetheme{Madrid}
+  \usefonttheme{serif}
+  \setbeamertemplate{navigation symbols}{}
+  
+  % Custom Footer
+  \setbeamertemplate{footline}{
+    \leavevmode%
+    \hbox{%
+    \begin{beamercolorbox}[wd=.4\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+      \usebeamerfont{author in head/foot}\MyShortAuthor~~\textbar~~\MyInstitute
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.3\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+      \usebeamerfont{title in head/foot}\MyShortTitle
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.3\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+      \usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}
+      \insertframenumber{} / \inserttotalframenumber\hspace*{2ex} 
+    \end{beamercolorbox}}%
+    \vskip0pt%
+  }
+
+  \setbeamercolor{structure}{fg=SecondaryColor}
+  \setbeamercolor{palette primary}{bg=PrimaryColor, fg=white}
+  \setbeamercolor{palette secondary}{bg=SecondaryColor, fg=white}
+  \setbeamercolor{palette tertiary}{bg=AccentColor, fg=white}
+  \setbeamercolor{titlelike}{parent=palette primary}
+  \setbeamercolor{author in head/foot}{fg=white, bg=PrimaryColor}
+  \setbeamercolor{title in head/foot}{fg=white, bg=SecondaryColor}
+  \setbeamercolor{date in head/foot}{fg=white, bg=AccentColor}
+  \setbeamercolor{block title}{bg=SecondaryColor, fg=white}
+  \setbeamercolor{block body}{bg=LightAccent!20, fg=PrimaryColor}
+  \setbeamercolor{alerted text}{fg=AlertColor}
+} 
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amsfonts, amssymb}
+
+\title[\MyShortTitle]{\MyTitle}
+\author[\MyShortAuthor]{\MyAuthor}
+\institute{\MyInstitute}
+\date{\MyDate}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+  \begin{center}
+      \footnotesize Professor: Luiz Fernando Bittencourt \\
+      \textbf{MO809 -- Tópicos em Computação Distribuída (1s2026)}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Outline}
+  \tableofcontents
+\end{frame}
+
+\section{Introduction}
+\begin{frame}{The "Bundle Deal" Strategy}
+    Imagine a shop where we want to create popular \textbf{Bundle Deals}.
+    \vfill
+    \begin{itemize}
+        \item \textbf{Receipts:} Each list represents one customer visit.
+        \item \textbf{Rule:} Customers buy at most \textit{one} of each item.
+        \item \textbf{Popularity Threshold ($minsup$):} We only keep bundles appearing in $\ge \sigma\%$ of receipts.
+    \end{itemize}
+    \vfill
+    \begin{block}{The Logic}
+        If \textbf{Coffee} is unpopular, any bundle containing Coffee is also unpopular. This allows us to "Prune" the search space.
+    \end{block}
+\end{frame}
+
+\section{The Distributed Wall}
+\begin{frame}{Spark RDD Bottlenecks}
+    In a Spark cluster, data is partitioned. 
+    \vfill
+    \begin{itemize}
+        \item Workers must match millions of candidates against local receipts.
+        \item \alert{The Problem:} Standard search structures (Hash Trees) fail to scale.
+        \item \textbf{The Solution:} Moving towards \textbf{Hash Table Tries} for $O(1)$ child lookups.
+    \end{itemize}
+\end{frame}
+
+\end{document}
