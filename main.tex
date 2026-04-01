@@ -1,3 +1,5 @@
+% filepath: src/template.tex
+
 \documentclass[xcolor={dvipsnames}]{beamer}
 
 % ==========================================
@@ -8,25 +10,34 @@
 \newcommand{\MyAuthor}{Luis Alberto Vásquez Vargas}
 \newcommand{\MyShortAuthor}{Luis Vásquez}
 \newcommand{\MyInstitute}{IC -- UNICAMP} 
+\newcommand{\MyEmail}{l322989@dac.unicamp.br}
 \newcommand{\MyDate}{March 31, 2026} 
 
 % --- COLOR PALETTE ---
-\definecolor{PrimaryColor}{HTML}{141B41}    % Space Indigo
-\definecolor{SecondaryColor}{HTML}{306BAC}  % Ocean Deep
-\definecolor{AccentColor}{HTML}{6F9CEB}     % Cornflower Blue
-\definecolor{LightAccent}{HTML}{98B9F2}     % Baby Blue Ice
-\definecolor{AlertColor}{HTML}{918EF4}      % Soft Periwinkle
+\definecolor{PrimaryColor}{HTML}{141B41}
+\definecolor{SecondaryColor}{HTML}{306BAC}
+\definecolor{AccentColor}{HTML}{6F9CEB}
+\definecolor{LightAccent}{HTML}{98B9F2}
+\definecolor{AlertColor}{HTML}{918EF4}
 
 % ==========================================
 % 2. THEME SETUP
 % ==========================================
+\hypersetup{
+    colorlinks=true,
+    citecolor=SecondaryColor,
+    linkcolor=SecondaryColor,
+    urlcolor=AccentColor
+}
+
 \mode<presentation>
 {
   \usetheme{Madrid}
+  \usecolortheme{default}
   \usefonttheme{serif}
   \setbeamertemplate{navigation symbols}{}
   
-  % Custom Footer
+  % --- FIXED FOOTER ---
   \setbeamertemplate{footline}{
     \leavevmode%
     \hbox{%
@@ -48,30 +59,49 @@
   \setbeamercolor{palette secondary}{bg=SecondaryColor, fg=white}
   \setbeamercolor{palette tertiary}{bg=AccentColor, fg=white}
   \setbeamercolor{titlelike}{parent=palette primary}
+  
   \setbeamercolor{author in head/foot}{fg=white, bg=PrimaryColor}
   \setbeamercolor{title in head/foot}{fg=white, bg=SecondaryColor}
   \setbeamercolor{date in head/foot}{fg=white, bg=AccentColor}
+  
   \setbeamercolor{block title}{bg=SecondaryColor, fg=white}
   \setbeamercolor{block body}{bg=LightAccent!20, fg=PrimaryColor}
   \setbeamercolor{alerted text}{fg=AlertColor}
+  
+  \setbeamerfont{author in head/foot}{size=\tiny}
+  \setbeamerfont{title in head/foot}{size=\tiny}
+  \setbeamerfont{date in head/foot}{size=\tiny}
+
+  % TOC style (Original "ball" but themed)
+  \setbeamertemplate{sections/subsections in toc}[ball]
+  \setbeamercolor{section number projected}{bg=PrimaryColor, fg=white}
+  \setbeamercolor{subsection number projected}{bg=SecondaryColor, fg=white}
 } 
 
+% ==========================================
+% 3. PACKAGES
+% ==========================================
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath, amsfonts, amssymb}
+\usepackage{chemfig}
+\usepackage[version=3]{mhchem}
 
 \title[\MyShortTitle]{\MyTitle}
 \author[\MyShortAuthor]{\MyAuthor}
 \institute{\MyInstitute}
 \date{\MyDate}
 
+% ==========================================
+% 4. DOCUMENT CONTENT
+% ==========================================
 \begin{document}
 
-\begin{frame}
+\begin{frame}[plain]
   \titlepage
   \begin{center}
       \footnotesize Professor: Luiz Fernando Bittencourt \\
-      \textbf{MO809 -- Tópicos em Computação Distribuída (1s2026)}
+      MO809 -- Tópicos em Computação Distribuída
   \end{center}
 \end{frame}
 
@@ -79,30 +109,84 @@
   \tableofcontents
 \end{frame}
 
-\section{Introduction}
+\section{Informal Model}
+
 \begin{frame}{The "Bundle Deal" Strategy}
     Imagine a shop where we want to create popular \textbf{Bundle Deals}.
     \vfill
     \begin{itemize}
         \item \textbf{Receipts:} Each list represents one customer visit.
-        \item \textbf{Rule:} Customers buy at most \textit{one} of each item.
-        \item \textbf{Popularity Threshold ($minsup$):} We only keep bundles appearing in $\ge \sigma\%$ of receipts.
+        \item \textbf{Rule:} Customers buy at most \textit{one} of each item (e.g., Bread, Milk, Tea).
+        \item \textbf{Popularity Threshold ($s\%$ or $minsup$):} We only care about bundles appearing in at least $s\%$ of total receipts.
     \end{itemize}
     \vfill
-    \begin{block}{The Logic}
-        If \textbf{Coffee} is unpopular, any bundle containing Coffee is also unpopular. This allows us to "Prune" the search space.
+    \begin{block}{Full Item Inventory}
+        $\{\text{Milk, Bread, Tea, Coffee, Soda, Juice, Butter, Cookies}\}$
     \end{block}
 \end{frame}
 
-\section{The Distributed Wall}
-\begin{frame}{Spark RDD Bottlenecks}
-    In a Spark cluster, data is partitioned. 
+\begin{frame}{The "Shortcut" Logic}
+    \begin{itemize}
+        \item If \textbf{Coffee} is in 5\% of receipts but our \textbf{Threshold} is 50\%:
+        \item \textbf{Pruning:} The bundle \textbf{\{Coffee + Milk\}} cannot be popular.
+        \item \textbf{Efficiency:} We save computation by ignoring all bundles containing Coffee.
+    \end{itemize}
+    \vfill
+\end{frame}
+
+\section{Formal Model}
+
+\begin{frame}{Formal Mathematical Model}
+    Let $I = \{i_1, i_2, \dots, i_m\}$ be the set of items.
+    \begin{definition}
+        A \textbf{Transaction Database} $D$ is a set of receipts $T \subseteq I$.
+    \end{definition}
+    \vfill
+    The goal is to find all $X \subseteq I$ such that:
+    \begin{equation*}
+        \text{support}(X) = \frac{|\{T \in D \mid X \subseteq T\}|}{|D|} \ge \sigma
+    \end{equation*}
+    where $\sigma$ is the \textbf{Minimum Support} ($minsup$).
+\end{frame}
+
+\begin{frame}{The Apriori Property}
+    The algorithm relies on \textbf{Down-closure Monotonicity}:
+    \vfill
+    \begin{exampleblock}{Theorem}
+        For any itemsets $X$ and $Y$:
+        \[ (X \subseteq Y) \implies \text{support}(X) \ge \text{support}(Y) \]
+    \end{exampleblock}
+    \vfill
+    \textbf{Consequence:} If $X$ is infrequent, all its supersets $Y$ are also infrequent, allowing for massive search space reduction.
+\end{frame}
+
+\section{The Distributed Challenge}
+
+\begin{frame}{The Spark Bottleneck}
+    In a distributed environment like Spark, receipts are spread across nodes.
     \vfill
     \begin{itemize}
-        \item Workers must match millions of candidates against local receipts.
-        \item \alert{The Problem:} Standard search structures (Hash Trees) fail to scale.
-        \item \textbf{The Solution:} Moving towards \textbf{Hash Table Tries} for $O(1)$ child lookups.
+        \item \textbf{Candidate Generation:} Millions of potential bundles are created.
+        \item \textbf{The Wall:} For every local receipt, the worker must check: 
+        \textit{"Which candidates match this specific receipt?"}
+        \item \textbf{The Core Problem:} Standard search is too slow; the performance is bound by the \textbf{efficiency of the matching data structure}.
     \end{itemize}
+\end{frame}
+
+% --- QUESTIONS SLIDE ---
+\section*{Questions}
+\begin{frame}[plain]
+  \centering
+  \vfill
+  \begin{beamercolorbox}[sep=12pt,center,rounded=true,shadow=true]{palette primary}
+    \usebeamerfont{title}\Huge Questions?
+  \end{beamercolorbox}
+  \vfill
+  \textbf{\MyAuthor} \\
+  \small \MyInstitute \\
+  \vspace{0.2cm}
+  \small \texttt{\MyEmail}
+  \vfill
 \end{frame}
 
 \end{document}
