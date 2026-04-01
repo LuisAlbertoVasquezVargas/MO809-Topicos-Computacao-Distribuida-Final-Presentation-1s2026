@@ -8,4 +8,4 @@
 *.gz
 *.fdb_latexmk
 *.fls
-main.pdf
+/main.pdf
