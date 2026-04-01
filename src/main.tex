@@ -5,7 +5,7 @@
 % ==========================================
 % 1. CONFIGURATION
 % ==========================================
-\newcommand{\MyTitle}{A Data Structure Perspective to the \\ \small RDD-based Apriori Algorithm on Spark}
+\newcommand{\MyTitle}{Efficient Data Structures for \\ \small RDD-based Apriori on Spark}
 \newcommand{\MyShortTitle}{Apriori on Spark}
 \newcommand{\MyAuthor}{Luis Alberto Vásquez Vargas}
 \newcommand{\MyShortAuthor}{Luis Vásquez}
@@ -72,7 +72,7 @@
   \setbeamerfont{title in head/foot}{size=\tiny}
   \setbeamerfont{date in head/foot}{size=\tiny}
 
-  % TOC style (Original "ball" but themed)
+  % TOC style
   \setbeamertemplate{sections/subsections in toc}[ball]
   \setbeamercolor{section number projected}{bg=PrimaryColor, fg=white}
   \setbeamercolor{subsection number projected}{bg=SecondaryColor, fg=white}
@@ -103,6 +103,17 @@
       \footnotesize Professor: Luiz Fernando Bittencourt \\
       MO809 -- Tópicos em Computação Distribuída
   \end{center}
+\end{frame}
+
+\begin{frame}{Reference Article}
+    \begin{block}{Main Reference}
+        \textbf{Pankaj Singh, Sudhakar Singh, P. K. Mishra, and Rakhi Garg} (2019). \\
+        \vspace{0.2cm}
+        \textit{"A data structure perspective to the RDD-based Apriori algorithm on Spark."} \\
+        \vspace{0.2cm}
+        \small Published in: \textbf{BVICAM's International Journal of Information Technology}. \\
+        Springer Nature.
+    \end{block}
 \end{frame}
 
 \begin{frame}{Outline}
@@ -167,9 +178,12 @@
     \vfill
     \begin{itemize}
         \item \textbf{Candidate Generation:} Millions of potential bundles are created.
-        \item \textbf{The Wall:} For every local receipt, the worker must check: 
-        \textit{"Which candidates match this specific receipt?"}
-        \item \textbf{The Core Problem:} Standard search is too slow; the performance is bound by the \textbf{efficiency of the matching data structure}.
+        \item \textbf{The Wall:} Every local worker must check which candidates match its RDD partition.
+        \item \textbf{Key Findings (Pankaj Singh et al.):} 
+        \begin{itemize}
+            \item Standard implementations use \textbf{Hash Trees}.
+            \item \textbf{Trie} and \textbf{Hash Table Trie} perform many times better in an RDD environment.
+        \end{itemize}
     \end{itemize}
 \end{frame}
 
