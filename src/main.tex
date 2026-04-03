@@ -2,13 +2,13 @@
 \documentclass[xcolor={dvipsnames}]{beamer}
 
 % ==========================================
-% 1. CONFIGURATION
+% 1. CONFIGURATION & METADATA
 % ==========================================
 \newcommand{\MyTitle}{Efficient Data Structures for \\ \small RDD-based Apriori on Spark}
 \newcommand{\MyShortTitle}{Apriori on Spark}
 \newcommand{\MyAuthor}{Luis Alberto Vásquez Vargas}
 \newcommand{\MyShortAuthor}{Luis Vásquez}
-\newcommand{\MyInstitute}{IC -- UNICAMP} 
+\newcommand{\MyInstitute}{Institute of Computing -- UNICAMP} 
 \newcommand{\MyEmail}{l322989@dac.unicamp.br}
 \newcommand{\MyDate}{April 7, 2026} 
 
@@ -53,32 +53,52 @@
   \setbeamercolor{title in head/foot}{fg=white, bg=SecondaryColor}
   \setbeamercolor{date in head/foot}{fg=white, bg=AccentColor}
   \setbeamercolor{block title}{bg=SecondaryColor, fg=white}
-  \setbeamercolor{block body}{bg=LightAccent!20, fg=PrimaryColor}
+  \setbeamercolor{block body}{bg=LightAccent!10, fg=PrimaryColor}
 } 
 
-% ==========================================
-% 3. PACKAGES
-% ==========================================
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath, amsfonts, amssymb}
 
 \title[\MyShortTitle]{\MyTitle}
 \author[\MyShortAuthor]{\MyAuthor}
-\institute{\MyInstitute}
+\institute[\MyInstitute]{\MyInstitute}
 \date{\MyDate}
 
 % ==========================================
-% 4. DOCUMENT CONTENT
+% 3. DOCUMENT CONTENT
 % ==========================================
 \begin{document}
 
+% --- REFINED TITLE PAGE ---
 \begin{frame}[plain]
-  \titlepage
-  \begin{center}
-      \footnotesize Professor: Luiz Fernando Bittencourt \\
-      MO809 -- Tópicos em Computação Distribuída
-  \end{center}
+  \vfill
+  \centering
+  
+  % Title Block
+  \begin{beamercolorbox}[sep=12pt,center,rounded=true]{palette primary}
+      \usebeamerfont{title}\inserttitle
+  \end{beamercolorbox}
+  
+  \vspace{0.6cm}
+  
+  \textbf{\insertauthor} \\
+  \textit{\small \insertinstitute}
+  
+  \vfill
+  
+  % Course & Instructor Block
+  \begin{beamercolorbox}[sep=8pt,center,rounded=true]{block body}
+      \textbf{MO809 -- Advanced Topics in Distributed Systems} \\
+      \vspace{0.1cm}
+      \small \textbf{Instructor:} Prof. Luiz Fernando Bittencourt
+  \end{beamercolorbox}
+  
+  \vfill
+  
+  \scriptsize
+  \texttt{\MyEmail} \\
+  \MyDate
 \end{frame}
 
 \begin{frame}{Outline}
@@ -87,15 +107,13 @@
 
 % --- SECTION 1: INTRODUCTION & MOTIVATION ---
 \section{Introduction \& Motivation}
-
 \begin{frame}{Introduction \& Motivation}
     \begin{itemize}
         \item \textbf{The Goal:} Discovering frequent itemsets (Association Rules) in massive transactional datasets.
         \item \textbf{The Barrier: Combinatorial Explosion}
         \begin{itemize}
             \item For a set of $n$ items, the search space is $O(2^n)$.
-            \item If $n=1000$: $2^{1000}$ is a number larger than the atoms in the observable universe.
-            \item \textbf{Reality Check:} Checking every combination is mathematically impossible, even with the world's most powerful clusters.
+            \item If $n=1000$: $2^{1000}$ is mathematically impossible to process.
         \end{itemize}
     \end{itemize}
 \end{frame}
@@ -104,13 +122,12 @@
     \begin{itemize}
         \item \textbf{Hardware Evolution:} 
         \begin{itemize}
-            \item We have the ``Ferrari'' of computing: \textbf{Apache Spark RDDs} (In-memory, high-speed distributed parallelism).
+            \item We have the ``Ferrari'' of computing: \textbf{Apache Spark RDDs}.
         \end{itemize}
         \vfill
         \item \textbf{Software Bottleneck:} 
         \begin{itemize}
-            \item Even a Ferrari is slow if it is stuck in a \textbf{traffic jam} of inefficient data structures.
-            \item Legacy structures (Hash Trees) create a ``bottleneck'' that wastes the speed of RAM.
+            \item Legacy structures (Hash Trees) create a \textbf{traffic jam} that wastes the speed of RAM.
         \end{itemize}
     \end{itemize}
     \vfill
@@ -119,38 +136,32 @@
     \end{alertblock}
 \end{frame}
 
-% --- PLACEHOLDERS ---
+% --- SECTION 2: THE FIM PROBLEM ---
 \section{The FIM Problem}
 \begin{frame}{The FIM Problem}
-    \centering \textit{Coming soon: Informal ``Bundle Deal'' and Formal Apriori models...}
+    \begin{itemize}
+        \item \textbf{Frequent Itemset Mining (FIM):} Finding subsets with frequency $\geq$ \textit{minsup}.
+        \item \textbf{The ``Bundle Deal'' Analogy:} 
+        \begin{itemize}
+            \item If customers buy GPUs, what else do they buy?
+            \item $n=1000$ items lead to $2^{1000}$ possible combinations.
+        \end{itemize}
+        \vfill
+        \item \textbf{The Apriori Principle:} 
+        \begin{quote}
+            ``Any subset of a frequent itemset must also be frequent.''
+        \end{quote}
+        \item We prune the space, but we need efficient storage for millions of candidates.
+    \end{itemize}
 \end{frame}
 
+% --- SECTIONS 3-6 (PLACEHOLDERS) ---
 \section{Infrastructure Evolution}
-\begin{frame}{Infrastructure Evolution}
-    \centering \textit{Coming soon: From Disk to Distributed RAM...}
-\end{frame}
-
 \section{Literature Overview}
-\begin{frame}{Literature Overview}
-    \centering \textit{Coming soon: Analysis of YAFIM and the Hash Tree bottleneck...}
-\end{frame}
-
 \section{Proposed Data Structures}
-\begin{frame}{Proposed Data Structures}
-    \centering \textit{Coming soon: Detailed look at Tries vs. Hash Table Tries...}
-\end{frame}
-
 \section{Experimental Results}
-\begin{frame}{Experimental Results}
-    \centering \textit{Coming soon: Speedup analysis and cluster configurations...}
-\end{frame}
-
 \section{Conclusion}
-\begin{frame}{Conclusion}
-    \centering \textit{Coming soon: Final takeaways.}
-\end{frame}
 
-% --- QUESTIONS SLIDE ---
 \begin{frame}[plain]
   \centering
   \vfill
@@ -159,9 +170,7 @@
   \end{beamercolorbox}
   \vfill
   \textbf{\MyAuthor} \\
-  \small \MyInstitute \\
-  \vspace{0.2cm}
-  \small \texttt{\MyEmail}
+  \texttt{\MyEmail}
   \vfill
 \end{frame}
 
