@@ -2,13 +2,13 @@
 \documentclass[xcolor={dvipsnames}]{beamer}
 
 % ==========================================
-% 1. CONFIGURATION & METADATA
+% 1. CONFIGURATION
 % ==========================================
 \newcommand{\MyTitle}{Efficient Data Structures for \\ \small RDD-based Apriori on Spark}
 \newcommand{\MyShortTitle}{Apriori on Spark}
 \newcommand{\MyAuthor}{Luis Alberto Vásquez Vargas}
 \newcommand{\MyShortAuthor}{Luis Vásquez}
-\newcommand{\MyInstitute}{Institute of Computing -- UNICAMP} 
+\newcommand{\MyInstitute}{IC -- UNICAMP} 
 \newcommand{\MyEmail}{l322989@dac.unicamp.br}
 \newcommand{\MyDate}{April 7, 2026} 
 
@@ -17,10 +17,18 @@
 \definecolor{SecondaryColor}{HTML}{306BAC}
 \definecolor{AccentColor}{HTML}{6F9CEB}
 \definecolor{LightAccent}{HTML}{98B9F2}
+\definecolor{AlertColor}{HTML}{918EF4}
 
 % ==========================================
-% 2. THEME SETUP
+% 2. THEME SETUP (From older commit)
 % ==========================================
+\hypersetup{
+    colorlinks=true,
+    citecolor=SecondaryColor,
+    linkcolor=SecondaryColor,
+    urlcolor=AccentColor
+}
+
 \mode<presentation>
 {
   \usetheme{Madrid}
@@ -49,24 +57,40 @@
   \setbeamercolor{palette secondary}{bg=SecondaryColor, fg=white}
   \setbeamercolor{palette tertiary}{bg=AccentColor, fg=white}
   \setbeamercolor{titlelike}{parent=palette primary}
+  
   \setbeamercolor{author in head/foot}{fg=white, bg=PrimaryColor}
   \setbeamercolor{title in head/foot}{fg=white, bg=SecondaryColor}
   \setbeamercolor{date in head/foot}{fg=white, bg=AccentColor}
+  
   \setbeamercolor{block title}{bg=SecondaryColor, fg=white}
-  \setbeamercolor{block body}{bg=LightAccent!10, fg=PrimaryColor}
+  \setbeamercolor{block body}{bg=LightAccent!20, fg=PrimaryColor}
+  \setbeamercolor{alerted text}{fg=AlertColor}
+  
+  \setbeamerfont{author in head/foot}{size=\tiny}
+  \setbeamerfont{title in head/foot}{size=\tiny}
+  \setbeamerfont{date in head/foot}{size=\tiny}
+
+  \setbeamertemplate{sections/subsections in toc}[ball]
+  \setbeamercolor{section number projected}{bg=PrimaryColor, fg=white}
+  \setbeamercolor{subsection number projected}{bg=SecondaryColor, fg=white}
 } 
 
+% ==========================================
+% 3. PACKAGES
+% ==========================================
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath, amsfonts, amssymb}
+\usepackage{chemfig}
+\usepackage[version=3]{mhchem}
 
 \title[\MyShortTitle]{\MyTitle}
 \author[\MyShortAuthor]{\MyAuthor}
-\institute[\MyInstitute]{\MyInstitute}
+\institute{\MyInstitute}
 \date{\MyDate}
 
 % ==========================================
-% 3. DOCUMENT CONTENT
+% 4. DOCUMENT CONTENT
 % ==========================================
 \begin{document}
 
@@ -74,20 +98,15 @@
 \begin{frame}[plain]
   \vfill
   \centering
-  
-  % Title Block
   \begin{beamercolorbox}[sep=12pt,center,rounded=true]{palette primary}
       \usebeamerfont{title}\inserttitle
   \end{beamercolorbox}
   
   \vspace{0.6cm}
-  
   \textbf{\insertauthor} \\
-  \textit{\small \insertinstitute}
+  \textit{\small \MyInstitute}
   
   \vfill
-  
-  % Course & Instructor Block
   \begin{beamercolorbox}[sep=8pt,center,rounded=true]{block body}
       \textbf{MO809 -- Advanced Topics in Distributed Systems} \\
       \vspace{0.1cm}
@@ -95,7 +114,6 @@
   \end{beamercolorbox}
   
   \vfill
-  
   \scriptsize
   \texttt{\MyEmail} \\
   \MyDate
@@ -105,7 +123,6 @@
   \tableofcontents
 \end{frame}
 
-% --- SECTION 1: INTRODUCTION & MOTIVATION ---
 \section{Introduction \& Motivation}
 \begin{frame}{Introduction \& Motivation}
     \begin{itemize}
@@ -136,7 +153,6 @@
     \end{alertblock}
 \end{frame}
 
-% --- SECTION 2: THE FIM PROBLEM ---
 \section{The FIM Problem}
 \begin{frame}{The FIM Problem}
     \begin{itemize}
@@ -155,12 +171,30 @@
     \end{itemize}
 \end{frame}
 
-% --- SECTIONS 3-6 (PLACEHOLDERS) ---
 \section{Infrastructure Evolution}
+\begin{frame}{Infrastructure Evolution}
+    \centering \Huge \textbf{Coming Soon...}
+\end{frame}
+
 \section{Literature Overview}
+\begin{frame}{Literature Overview}
+    \centering \Huge \textbf{Coming Soon...}
+\end{frame}
+
 \section{Proposed Data Structures}
+\begin{frame}{Proposed Data Structures}
+    \centering \Huge \textbf{Coming Soon...}
+\end{frame}
+
 \section{Experimental Results}
+\begin{frame}{Experimental Results}
+    \centering \Huge \textbf{Coming Soon...}
+\end{frame}
+
 \section{Conclusion}
+\begin{frame}{Conclusion}
+    \centering \Huge \textbf{Coming Soon...}
+\end{frame}
 
 \begin{frame}[plain]
   \centering
@@ -170,7 +204,9 @@
   \end{beamercolorbox}
   \vfill
   \textbf{\MyAuthor} \\
-  \texttt{\MyEmail}
+  \small \MyInstitute \\
+  \vspace{0.2cm}
+  \small \texttt{\MyEmail}
   \vfill
 \end{frame}
 
