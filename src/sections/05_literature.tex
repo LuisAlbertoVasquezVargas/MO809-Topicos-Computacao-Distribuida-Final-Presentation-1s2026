@@ -1,0 +1,44 @@
+% sections/05_literature.tex
+
+\section{Literature Overview}
+\begin{frame}{Literature Overview: FIM Evolution}
+    \begin{itemize}
+        \item \textbf{The Classic Era (Sequential):}
+        \begin{itemize}
+            \item \textbf{Apriori (1994):} The foundation. Used Hash Trees to store candidates.
+            \item \textbf{FP-Growth (2000):} Eliminated candidate generation using a prefix-tree (FP-Tree), but is notoriously difficult to parallelize efficiently.
+        \end{itemize}
+        \vfill
+        \item \textbf{The Distributed Era (Disk-based):}
+        \begin{itemize}
+            \item \textbf{PFP (2008):} Parallel FP-Growth on MapReduce. Heavy Disk I/O overhead due to the nature of Hadoop.
+        \end{itemize}
+        \vfill
+        \item \textbf{The Modern Era (In-Memory):}
+        \begin{itemize}
+            \item \textbf{Spark-based Apriori:} Focuses on RDD persistence to avoid re-reading data. 
+            \item \textbf{The Gap:} Most Spark implementations still rely on standard Hash Trees or simple Arrays, failing to optimize the CPU-to-Memory bottleneck.
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Literature Overview: Data Structure Benchmarks}
+    \begin{itemize}
+        \item \textbf{Hash Tree (HT):}
+        \begin{itemize}
+            \item Standard for decades.
+            \item \textit{Issue:} High branch misprediction and poor cache locality in modern CPUs.
+        \end{itemize}
+        \vfill
+        \item \textbf{Trie (Prefix-Tree):}
+        \begin{itemize}
+            \item Fast traversal, no hashing overhead at each node.
+            \item \textit{Issue:} Can become very deep and sparse, consuming significant memory.
+        \end{itemize}
+        \vfill
+        \item \textbf{The Research Question:}
+        \begin{quote}
+            Can a hybrid approach—the \textbf{Hash Table Trie}—outperform both in a distributed RDD environment where memory is abundant but CPU cycles are precious?
+        \end{quote}
+    \end{itemize}
+\end{frame}

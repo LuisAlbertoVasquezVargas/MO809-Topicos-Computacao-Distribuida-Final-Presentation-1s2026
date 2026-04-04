@@ -1,0 +1,47 @@
+% sections/08_conclusion.tex
+
+\section{Conclusion}
+\begin{frame}{Conclusion: The Sequential Context}
+    \begin{itemize}
+        \item \textbf{Theoretical Expectation:} 
+        \begin{itemize}
+            \item The \textbf{Hash Table Trie} was designed to accelerate itemset traversal by combining Trie logic with hashing.
+        \end{itemize}
+        \vfill
+        \item \textbf{Previous Practical Failure:} 
+        \begin{itemize}
+            \item In earlier sequential implementations, where \textbf{memory was a strict bottleneck}, the hashing overhead caused it to underperform.
+            \item It was often documented as the least efficient variant in non-distributed settings.
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Conclusion: The Spark Paradigm Shift}
+    \begin{itemize}
+        \item \textbf{Distributed Advantage:} 
+        \begin{itemize}
+            \item Within Spark's \textbf{distributed memory (RDD)} architecture, the Hash Table Trie finally realizes its theoretical efficiency.
+        \end{itemize}
+        \vfill
+        \item \textbf{Benchmark Results:} 
+        \begin{itemize}
+            \item Experimental data shows it performs \textbf{significantly better} than the traditional Hash Tree.
+            \item It maintains a slight edge over the standard Trie across most datasets.
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Conclusion: Final Verdict}
+    \begin{itemize}
+        \item \textbf{In-Memory Optimization:} 
+        \begin{itemize}
+            \item Memory-optimized structures are the key to high-performance FIM on Spark.
+        \end{itemize}
+        \vfill
+        \item \textbf{Summary:}
+        \begin{itemize}
+            \item The \textbf{Hash Table Trie}, once considered the ``worst'' in sequential settings, is now the most robust choice for RDD-based Apriori.
+            \item Infrastructure alone (Spark) isn't enough; the underlying \textbf{data structure} must evolve to match the hardware.
+        \end{itemize}
+    \end{itemize}
+\end{frame}

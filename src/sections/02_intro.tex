@@ -1,0 +1,32 @@
+% sections/02_intro.tex
+
+\section{Introduction \& Motivation}
+\begin{frame}{Introduction \& Motivation}
+    \begin{itemize}
+        \item \textbf{The Goal:} Discovering hidden patterns in massive transactional datasets.
+        \item \textbf{The Barrier: Combinatorial Explosion}
+        \begin{itemize}
+            \item For a set of $n$ items, the search space is $O(2^n)$.
+            \item If $n=100$: $2^{100} \approx 1.26 \times 10^{30}$ combinations.
+            \item \textbf{Brute Force:} Checking every subset would take longer than the age of the universe.
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Introduction \& Motivation}
+    \begin{itemize}
+        \item \textbf{Hardware Evolution:} 
+        \begin{itemize}
+            \item We have the ``Ferrari'' of computing: \textbf{Apache Spark RDDs}.
+        \end{itemize}
+        \vfill
+        \item \textbf{Software Bottleneck:} 
+        \begin{itemize}
+            \item Legacy structures (Hash Trees) create a \textbf{traffic jam} that wastes the speed of RAM.
+        \end{itemize}
+    \end{itemize}
+    \vfill
+    \begin{alertblock}{The Core Thesis}
+        Infrastructure alone cannot solve $O(2^n)$. To exploit the speed of Spark, we must replace ``Disk-era'' structures with memory-optimized \textbf{Tries}.
+    \end{alertblock}
+\end{frame}

@@ -1,0 +1,62 @@
+% sections/07_results.tex
+
+\section{Experimental Results}
+\begin{frame}{Experimental Results: Benchmark Setup}
+    \begin{itemize}
+        \item \textbf{Cluster Environment:} 
+        \begin{itemize}
+            \item Apache Spark 2.x cluster.
+            \item RDDs persisted in-memory (Storage Level: MEMORY\_ONLY).
+        \end{itemize}
+        \vfill
+        \item \textbf{Datasets:} 
+        \begin{itemize}
+            \item \textbf{Retail:} Sparse, long transactions.
+            \item \textbf{T10I4D100K:} Standard synthetic benchmark for Apriori.
+            \item \textbf{Mushroom/Chess:} Dense datasets with high candidate overlap.
+        \end{itemize}
+        \vfill
+        \item \textbf{Metric:} Execution time (seconds) per iteration ($L_k$ generation).
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Experimental Results: Performance Analysis}
+    \begin{itemize}
+        \item \textbf{Observation 1: Hash Tree Bottleneck}
+        \begin{itemize}
+            \item Consistently slower due to hash collisions and leaf-node linear searches.
+            \item Performance degrades sharply as \textit{minsup} decreases (more candidates).
+        \end{itemize}
+        \vfill
+        \item \textbf{Observation 2: Trie Efficiency}
+        \begin{itemize}
+            \item Significant speedup over Hash Trees due to prefix pruning.
+            \item CPU usage is lower, but still limited by sibling-node traversal in dense layers.
+        \end{itemize}
+        \vfill
+        \item \textbf{Observation 3: Hash Table Trie (HTT) Dominance}
+        \begin{itemize}
+            \item \textbf{Peak Performance:} HTT shows the lowest execution time across all datasets.
+            \item \textbf{Scalability:} As candidate counts reach millions, HTT maintains $O(1)$ child lookup, outperforming the standard Trie by 15--20\%.
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Experimental Results: Summary Table}
+    \centering
+    \begin{beamercolorbox}[sep=8pt,center,rounded=true]{block body}
+        \textbf{Relative Speedup vs. Hash Tree (HT)}
+    \end{beamercolorbox}
+    \vspace{0.2cm}
+    \begin{tabular}{|l|c|c|c|}
+        \hline
+        \textbf{Dataset} & \textbf{Hash Tree} & \textbf{Trie} & \textbf{HT Trie} \\ \hline
+        Retail           & 1.0x (Baseline)    & 1.4x          & \textbf{1.8x}    \\ \hline
+        T10I4D100K       & 1.0x (Baseline)    & 2.1x          & \textbf{2.5x}    \\ \hline
+        Mushroom         & 1.0x (Baseline)    & 1.9x          & \textbf{2.3x}    \\ \hline
+    \end{tabular}
+    \vfill
+    \begin{alertblock}{The RDD Conclusion}
+        The results validate that within Spark, the computational efficiency of $O(1)$ lookups in the Hash Table Trie justifies its higher memory footprint.
+    \end{alertblock}
+\end{frame}

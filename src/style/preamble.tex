@@ -1,0 +1,99 @@
+% src/style/preamble.tex
+
+% ==========================================
+% 1. METADATA & MACROS (Must be first for the footline)
+% ==========================================
+\newcommand{\MyTitle}{Efficient Data Structures for \\ \small RDD-based Apriori on Spark}
+\newcommand{\MyShortTitle}{Apriori on Spark}
+\newcommand{\MyAuthor}{Luis Alberto Vásquez Vargas}
+\newcommand{\MyShortAuthor}{Luis Vásquez}
+\newcommand{\MyInstitute}{IC -- UNICAMP} 
+\newcommand{\MyEmail}{l322989@dac.unicamp.br}
+\newcommand{\MyDate}{April 7, 2026} 
+
+\title[\MyShortTitle]{\MyTitle}
+\author[\MyShortAuthor]{\MyAuthor}
+\institute{\MyInstitute}
+\date{\MyDate}
+
+% ==========================================
+% 2. PACKAGES
+% ==========================================
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{beramono}    % Professional code font
+\usepackage{amsmath, amsfonts, amssymb}
+\usepackage{chemfig}
+\usepackage[version=3]{mhchem}
+\usepackage{tikz}
+
+% --- IMAGE PATH ---
+% Note: Since you use TEXINPUTS=./src//: in your latexmk command, 
+% LaTeX will look recursively for the "img" folder.
+\graphicspath{ {img/} }
+
+% ==========================================
+% 3. COLORS & THEME SETUP
+% ==========================================
+\definecolor{PrimaryColor}{HTML}{141B41}
+\definecolor{SecondaryColor}{HTML}{306BAC}
+\definecolor{AccentColor}{HTML}{6F9CEB}
+\definecolor{LightAccent}{HTML}{98B9F2}
+\definecolor{AlertColor}{HTML}{918EF4}
+
+\hypersetup{
+    colorlinks=true,
+    citecolor=SecondaryColor,
+    linkcolor=SecondaryColor,
+    urlcolor=AccentColor
+}
+
+\mode<presentation>
+{
+  \usetheme{Madrid}
+  \usecolortheme{default}
+  \usefonttheme{serif}
+  \setbeamertemplate{navigation symbols}{}
+  
+  % --- CUSTOM FOOTLINE ---
+  \setbeamertemplate{footline}{
+    \leavevmode%
+    \hbox{%
+    \begin{beamercolorbox}[wd=.4\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+      \usebeamerfont{author in head/foot}\MyShortAuthor~~\textbar~~\MyInstitute
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.3\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+      \usebeamerfont{title in head/foot}\MyShortTitle
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.3\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+      \usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}
+      \insertframenumber{} / \inserttotalframenumber\hspace*{2ex} 
+    \end{beamercolorbox}}%
+    \vskip0pt%
+  }
+
+  % --- BEAMER COLORS ---
+  \setbeamercolor{structure}{fg=SecondaryColor}
+  \setbeamercolor{palette primary}{bg=PrimaryColor, fg=white}
+  \setbeamercolor{palette secondary}{bg=SecondaryColor, fg=white}
+  \setbeamercolor{palette tertiary}{bg=AccentColor, fg=white}
+  \setbeamercolor{titlelike}{parent=palette primary}
+  
+  \setbeamercolor{author in head/foot}{fg=white, bg=PrimaryColor}
+  \setbeamercolor{title in head/foot}{fg=white, bg=SecondaryColor}
+  \setbeamercolor{date in head/foot}{fg=white, bg=AccentColor}
+  
+  \setbeamercolor{block title}{bg=SecondaryColor, fg=white}
+  \setbeamercolor{block body}{bg=LightAccent!20, fg=PrimaryColor}
+  \setbeamercolor{alerted text}{fg=AlertColor}
+  
+  % --- BEAMER FONTS ---
+  \setbeamerfont{author in head/foot}{size=\tiny}
+  \setbeamerfont{title in head/foot}{size=\tiny}
+  \setbeamerfont{date in head/foot}{size=\tiny}
+
+  \setbeamertemplate{sections/subsections in toc}[ball]
+  \setbeamercolor{section number projected}{bg=PrimaryColor, fg=white}
+  \setbeamercolor{subsection number projected}{bg=SecondaryColor, fg=white}
+}

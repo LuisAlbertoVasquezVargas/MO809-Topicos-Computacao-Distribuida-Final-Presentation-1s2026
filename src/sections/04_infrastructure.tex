@@ -1,0 +1,35 @@
+% sections/04_infrastructure.tex
+
+\section{Infrastructure Evolution}
+\begin{frame}{Infrastructure Evolution: Apache Spark}
+    \begin{itemize}
+        \item \textbf{The Paradigm Shift:} Moving from MapReduce (Disk-based) to \textbf{Spark (Memory-based)}.
+        \item \textbf{RDD (Resilient Distributed Dataset):}
+        \begin{itemize}
+            \item Immutable, partitioned collections of records.
+            \item Distributed across the RAM of multiple cluster nodes.
+        \end{itemize}
+        \vfill
+        \item \textbf{The Challenge for Apriori:}
+        \begin{itemize}
+            \item Apriori requires multiple passes over the dataset.
+            \item Spark keeps the dataset in RAM, but the \textbf{CPU overhead} of searching candidate itemsets in every transaction remains the primary bottleneck.
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Infrastructure Evolution: Spark RDD Workflow}
+    \begin{itemize}
+        \item \textbf{Parallelism:} Each worker node processes a partition of the transaction RDD.
+        \item \textbf{Candidate Generation:}
+        \begin{itemize}
+            \item Drivers broadcast the candidate itemsets to all workers.
+            \item Workers must match these candidates against local transactions.
+        \end{itemize}
+        \vfill
+        \item \textbf{The Need for Speed:} 
+        \begin{itemize}
+            \item If the data structure used for matching is slow, the distributed RAM advantage is neutralized by \textbf{search latency}.
+        \end{itemize}
+    \end{itemize}
+\end{frame}

@@ -1,3 +1,4 @@
+<!-- README.md -->
 
 # MO809 - Tópicos em Computação Distribuída
 
@@ -18,74 +19,57 @@ This repository contains the LaTeX source code and final presentation for the **
 
 ---
 
-### 🛠️ Build Instructions
+### 🛠️ Build Instructions (Arch Linux)
 
-#### Option A: Overleaf (Cloud - Beginner Friendly)
-1. Create a new project in Overleaf  
-2. Copy and paste `src/main.tex`  
-3. Click **Recompile**
-
----
-
-#### Option B: Local Setup (Arch Linux - Fast & Minimal)
-
-##### 1. Install dependencies
+#### 1. Install dependencies
 ```bash
 sudo pacman -S texlive-basic texlive-latexextra texlive-fontsrecommended \
                texlive-fontsextra texlive-bibtexextra texlive-plaingeneric \
-               texlive-binextra texlive-science zathura zathura-pdf-mupdf biber
-````
-
----
-
-##### 2. Live development (auto-compile + auto-refresh)
-
-Start the compiler (watch mode):
-
-```bash id="7y7hzt"
-latexmk -pdf -pvc -outdir=outputs src/main.tex
+               texlive-binextra texlive-science zathura zathura-pdf-mupdf \
+               latexmk
 ```
 
-In another terminal, open the PDF viewer:
+#### 2. One-Line Build & Watch
+Run this from the project root. It prepares the output mirror, cleans old artifacts, and starts the live-recompile loop:
 
-```bash id="3z7n7b"
+```bash
+mkdir -p outputs/sections outputs/style && rm -rf outputs/* && touch outputs/.gitkeep && TEXINPUTS=./src//: latexmk -pdf -pvc -outdir=outputs src/main.tex
+```
+
+#### 3. Open Preview
+Run this in a separate terminal:
+
+```bash
 zathura outputs/main.pdf
 ```
 
 ---
 
 ### ⚡ Workflow
-
-* Edit in **Neovim**
-* Save file (`:w`)
-* PDF updates automatically in Zathura
-
-No plugins required. Fast feedback loop.
+* Edit modules in **Neovim** (e.g., `src/sections/03_the_problem.tex`).
+* Save file (`:w`).
+* `latexmk` detects the change via recursive search (`//`) and updates the PDF in `outputs/`.
+* **Zathura** refreshes the view instantly.
 
 ---
 
 ### 📂 Repository Structure
-
-```id="6hskds"
+```text
 .
+├── img/                # Graphics and author photos
+├── outputs/            # Build artifacts (mirrors src structure)
+│   └── main.pdf        # Final rendered presentation
 ├── src/
-│   └── main.tex
-├── outputs/
-│   └── main.pdf    # generated presentation
+│   ├── main.tex        # Entry point (Executive Controller)
+│   ├── sections/       # Content modules (.tex)
+│   └── style/          # Preamble and theme configuration
 └── README.md
 ```
 
 ---
 
 ### 🎨 Design Standards
-
 * **Color Palette:** Space Indigo (`#141B41`), Ocean Deep (`#306BAC`)
 * **Editor:** Neovim (plugin-free workflow)
-* **Convention:** Each `.tex` file must include its relative path as a comment on the first line
-
----
-
-### 🚀 Performance Note
-
-Compared to Overleaf, local compilation with `latexmk` provides near-instant feedback, making it significantly more efficient for iterative slide editing and final adjustments.
+* **Convention:** Every `.tex` file **must** include its relative filepath at the very first line followed by an empty line.
 

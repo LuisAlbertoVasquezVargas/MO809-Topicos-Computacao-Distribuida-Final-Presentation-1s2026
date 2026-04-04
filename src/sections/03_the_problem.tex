@@ -1,0 +1,19 @@
+% sections/03_the_problem.tex
+
+\section{The FIM Problem}
+\begin{frame}{The FIM Problem}
+    \begin{itemize}
+        \item \textbf{Frequent Itemset Mining (FIM):} Finding subsets with frequency $\geq$ \textit{minsup}.
+        \item \textbf{The ``Bundle Deal'' Analogy:} 
+        \begin{itemize}
+            \item If customers buy GPUs, what else do they buy?
+            \item $n=1000$ items lead to $2^{1000}$ possible combinations.
+        \end{itemize}
+        \vfill
+        \item \textbf{The Apriori Principle:} 
+        \begin{quote}
+            ``Any subset of a frequent itemset must also be frequent.''
+        \end{quote}
+        \item We prune the space, but we need efficient storage for millions of candidates.
+    \end{itemize}
+\end{frame}
