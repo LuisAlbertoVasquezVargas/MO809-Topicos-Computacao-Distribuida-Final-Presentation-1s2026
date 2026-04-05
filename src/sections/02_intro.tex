@@ -2,7 +2,7 @@
 
 \section{Introduction \& Motivation}
 
-% --- SLIDE 1: The "Why" (Synced & Spaced) ---
+% --- SLIDE 1: The "Why" (Market Basket Problem) ---
 \begin{frame}{Introduction: The Market Basket Problem}
     \begin{columns}[c, onlytextwidth]
         \begin{column}{0.38\textwidth}
@@ -28,9 +28,8 @@
         \begin{column}{0.60\textwidth}
             \centering
             \begin{tikzpicture}[scale=0.75]
-                % --- The Receipt (Widened to 3.0 to keep prices INSIDE) ---
+                % --- The Receipt (Tuned for price alignment) ---
                 \draw[thick, fill=white] (0,2) rectangle (3.0,6);
-                % Jagged edge recalculated for 3.0 width
                 \draw[thick] (0,2) -- (0.2,1.8) -- (0.4,2) -- (0.6,1.8) -- (0.8,2) -- (1.0,1.8) -- (1.2,2) -- (1.4,1.8) -- (1.6,2) -- (1.8,1.8) -- (2.0,2) -- (2.2,1.8) -- (2.4,2) -- (2.6,1.8) -- (2.8,2) -- (3.0,1.8) -- (3.0,2);
                 
                 \node at (1.5, 5.6) {\textbf{\tiny RECEIPT}};
@@ -39,7 +38,7 @@
                 \node[anchor=west] at (0.1, 4.2) {\tiny BEER ........ \$12};
                 \node[anchor=west] at (0.1, 3.8) {\tiny DIAPERS .. \$25};
                 
-                % --- Transition Arrow (Shifted to start at 3.1) ---
+                % --- Transition Arrow ---
                 \draw[->, ultra thick, gray!40] (3.1, 4) -- (4.1, 4);
 
                 % --- The Database (Properly spaced) ---
@@ -57,4 +56,87 @@
             \end{tikzpicture}
         \end{column}
     \end{columns}
+\end{frame}
+
+% --- SLIDE 2: The Technical Challenge ---
+\begin{frame}{The Technical Challenge}
+    \begin{columns}[T, onlytextwidth]
+        \begin{column}{0.58\textwidth}
+            \begin{itemize}
+                \item \textbf{The Barrier: Combinatorial Explosion}
+                \begin{itemize}
+                    \item For $n=100$: $2^{100} \approx 1.26 \times 10^{30}$ subsets.
+                    \item \textbf{Brute Force:} At $10^9$ ops/sec, processing 100 items takes $\approx 4 \times 10^{13}$ years.
+                \end{itemize}
+                \vspace{0.4cm}
+                \item \textbf{A Temporal Perspective:}
+                \begin{itemize}
+                    \item The Universe is $\approx 13.8$ billion years old.
+                    \item This single task takes \textbf{$\approx$ 3,000x longer} than the entire history of time.
+                \end{itemize}
+            \end{itemize}
+            
+            \vfill 
+            \begin{exampleblock}{}
+                \centering \footnotesize
+                \textbf{The Bottom Line:} Even with state-of-the-art computing power, the exponential complexity remains the fundamental bottleneck.
+            \end{exampleblock}
+        \end{column}
+
+        \begin{column}{0.38\textwidth}
+            \centering
+            \begin{minipage}{\textwidth}
+                \centering
+                \textbf{Power Set for $n=4$} \\
+                \vspace{0.1cm}
+                \renewcommand{\arraystretch}{1}
+                \scriptsize
+                \begin{tabular}{l l}
+                    \hline
+                    \textbf{Size} & \textbf{Subsets} \\ \hline
+                    $k=0$ & $\emptyset$ \\
+                    $k=1$ & $\{a\}, \{b\}, \{c\}, \{d\}$ \\
+                    $k=2$ & $\{ab\}, \{ac\}, \{ad\}, \dots$ \\
+                    $k=3$ & $\{abc\}, \{abd\}, \dots$ \\ 
+                    $k=4$ & $\{abcd\}$ \\ \hline
+                \end{tabular}
+                \vspace{0.3cm}
+                \small \textbf{Total: 16 Combinations} \\
+                \scriptsize \textit{Adding 1 item doubles the work!}
+            \end{minipage}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- SLIDE 3: The Infrastructure Solution ---
+\begin{frame}{The Infrastructure Solution}
+    \begin{columns}[c, onlytextwidth]
+        \begin{column}{0.5\textwidth}
+            \centering
+            \begin{tikzpicture}
+                \node[anchor=south west,inner sep=0] (image) at (0,0) {\includegraphics[width=\textwidth]{img/ferrari.jpg}};
+                \node[align=center, fill=PrimaryColor, text=white, font=\bfseries, rounded corners=2pt, inner sep=4pt] 
+                    at (2.5, 4.0) {Apache Spark RDDs};
+            \end{tikzpicture}
+        \end{column}
+
+        \begin{column}{0.45\textwidth}
+            \begin{itemize}
+                \item \textbf{Hardware Evolution:} 
+                \begin{itemize}
+                    \item We use \textbf{Apache Spark RDDs}: the distributed ``Ferrari'' of in-memory computing.
+                \end{itemize}
+                \vspace{0.3cm}
+                \item \textbf{The Bottleneck:} 
+                \begin{itemize}
+                    \item Legacy structures (Hash Trees) act like a \textbf{traffic jam} in a high-speed engine.
+                \end{itemize}
+            \end{itemize}
+        \end{column}
+    \end{columns}
+
+    \vfill
+    \begin{alertblock}{The Core Thesis}
+        Infrastructure alone cannot solve $O(2^n)$. To exploit Spark's speed, we must replace ``Disk-era'' structures with memory-optimized \textbf{Tries}.
+    \end{alertblock}
 \end{frame}
