@@ -68,19 +68,13 @@
                     \item For $n=100$: $2^{100} \approx 1.26 \times 10^{30}$ subsets.
                     \item \textbf{Brute Force:} At $10^9$ ops/sec, processing 100 items takes $\approx 4 \times 10^{13}$ years.
                 \end{itemize}
-                \vspace{0.4cm}
+                \vspace{0.3cm}
                 \item \textbf{A Temporal Perspective:}
                 \begin{itemize}
                     \item The Universe is $\approx 13.8$ billion years old.
                     \item This single task takes \textbf{$\approx$ 3,000x longer} than the entire history of time.
                 \end{itemize}
             \end{itemize}
-            
-            \vfill 
-            \begin{exampleblock}{}
-                \centering \footnotesize
-                \textbf{The Bottom Line:} Even with state-of-the-art computing power, the exponential complexity remains the fundamental bottleneck.
-            \end{exampleblock}
         \end{column}
 
         \begin{column}{0.38\textwidth}
@@ -89,7 +83,7 @@
                 \centering
                 \textbf{Power Set for $n=4$} \\
                 \vspace{0.1cm}
-                \renewcommand{\arraystretch}{1}
+                \renewcommand{\arraystretch}{1.1}
                 \scriptsize
                 \begin{tabular}{l l}
                     \hline
@@ -100,12 +94,19 @@
                     $k=3$ & $\{abc\}, \{abd\}, \dots$ \\ 
                     $k=4$ & $\{abcd\}$ \\ \hline
                 \end{tabular}
-                \vspace{0.3cm}
+                \vspace{0.2cm}
                 \small \textbf{Total: 16 Combinations} \\
                 \scriptsize \textit{Adding 1 item doubles the work!}
             \end{minipage}
         \end{column}
     \end{columns}
+
+    \vfill 
+    % MOVED: Outside columns to span full width and avoid footer collision
+    \begin{alertblock}{}
+        \centering \footnotesize
+        \textbf{The Bottom Line:} Even with state-of-the-art computing power, the exponential complexity remains the fundamental bottleneck.
+    \end{alertblock}
 \end{frame}
 
 % --- SLIDE 3: The Infrastructure Solution ---

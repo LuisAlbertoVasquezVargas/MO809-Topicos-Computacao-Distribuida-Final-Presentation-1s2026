@@ -1,20 +1,16 @@
 % src/main.tex
 \documentclass[xcolor={dvipsnames}]{beamer}
 
-% 1. GLOBAL STYLE, METADATA & THEME
-\input{style/preamble.tex} 
+\input{style/preamble.tex}
 
 \begin{document}
 
-% 2. TITLE PAGE
 \input{sections/00_title.tex}
 
-% 3. TABLE OF CONTENTS
 \begin{frame}{Outline}
-  \tableofcontents
+  \tableofcontents[hideallsubsections] % This will now show 1, 2, 3...
 \end{frame}
 
-% 4. CONTENT MODULES
 \input{sections/01_base_study.tex}
 \input{sections/02_intro.tex}
 \input{sections/03_the_problem.tex}
@@ -23,11 +19,7 @@
 \input{sections/06_data_structures.tex}
 \input{sections/07_results.tex}
 \input{sections/08_conclusion.tex}
-
-% 5. REFERENCES
 \input{sections/09_references.tex}
-
-% 6. Q&A / FINAL SLIDE
 \input{sections/10_qa.tex}
 
 \end{document}

@@ -33,7 +33,8 @@ sudo pacman -S texlive-basic texlive-latexextra texlive-fontsrecommended \
 Run this from the project root. It prepares the output mirror, cleans old artifacts, and starts the live-recompile loop:
 
 ```bash
-mkdir -p outputs/sections outputs/style && rm -rf outputs/* && touch outputs/.gitkeep && TEXINPUTS=./src//: latexmk -pdf -pvc -outdir=outputs src/main.tex
+mkdir -p outputs/sections outputs/style && rm -rf outputs/* && \
+TEXINPUTS=./src//:./img//: latexmk -pdf -pvc -outdir=outputs src/main.tex
 ```
 
 #### 3. Open Preview

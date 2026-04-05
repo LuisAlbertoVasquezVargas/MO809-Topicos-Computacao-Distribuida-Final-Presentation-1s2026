@@ -1,15 +1,15 @@
 % src/style/preamble.tex
 
 % ==========================================
-% 1. METADATA & MACROS (Must be first for the footline)
+% 1. METADATA & MACROS
 % ==========================================
-\newcommand{\MyTitle}{Efficient Data Structures for \\ \small RDD-based Apriori on Spark}
-\newcommand{\MyShortTitle}{Apriori on Spark}
-\newcommand{\MyAuthor}{Luis Alberto Vásquez Vargas}
-\newcommand{\MyShortAuthor}{Luis Vásquez}
-\newcommand{\MyInstitute}{IC -- UNICAMP} 
-\newcommand{\MyEmail}{l322989@dac.unicamp.br}
-\newcommand{\MyDate}{April 7, 2026} 
+\def\MyTitle{Efficient Data Structures for \\ \small RDD-based Apriori on Spark}
+\def\MyShortTitle{Apriori on Spark}
+\def\MyAuthor{Luis Alberto Vásquez Vargas}
+\def\MyShortAuthor{Luis Vásquez}
+\def\MyInstitute{IC -- UNICAMP}
+\def\MyEmail{l322989@dac.unicamp.br}
+\def\MyDate{April 7, 2026}
 
 \title[\MyShortTitle]{\MyTitle}
 \author[\MyShortAuthor]{\MyAuthor}
@@ -22,20 +22,18 @@
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{beramono}    % Professional code font
+\usepackage{beramono}
 \usepackage{amsmath, amsfonts, amssymb}
 \usepackage{chemfig}
 \usepackage[version=3]{mhchem}
 \usepackage{tikz}
 \usepackage[table, dvipsnames]{xcolor}
+\usepackage{etoolbox} 
 
-% --- IMAGE PATH ---
-% Note: Since you use TEXINPUTS=./src//: in your latexmk command, 
-% LaTeX will look recursively for the "img" folder.
 \graphicspath{ {img/} }
 
 % ==========================================
-% 3. COLORS & THEME SETUP
+% 3. COLORS & HYPERREF
 % ==========================================
 \definecolor{PrimaryColor}{HTML}{141B41}
 \definecolor{SecondaryColor}{HTML}{306BAC}
@@ -46,18 +44,38 @@
 \hypersetup{
     colorlinks=true,
     citecolor=SecondaryColor,
-    linkcolor=SecondaryColor,
+    linkcolor=PrimaryColor, 
     urlcolor=AccentColor
 }
 
+% --- COMPACT TABLE OF CONTENTS (Squeezes vertical space) ---
+\makeatletter
+\patchcmd{\beamer@sectionintoc}{\vskip1.5em}{\vskip1.0em}{}{}
+\makeatother
+
+% ==========================================
+% 4. THEME & TEMPLATE SETUP
+% ==========================================
 \mode<presentation>
 {
   \usetheme{Madrid}
   \usecolortheme{default}
   \usefonttheme{serif}
   \setbeamertemplate{navigation symbols}{}
-  
-  % --- CUSTOM FOOTLINE ---
+
+  % --- TOC BALL STYLE ---
+  \setbeamertemplate{sections/subsections in toc}[ball]
+  \setbeamercolor{section number projected}{bg=PrimaryColor, fg=white}
+
+  % --- THE INDEXED HEADER ---
+  \setbeamertemplate{frametitle}{
+      \nointerlineskip
+      \begin{beamercolorbox}[wd=\paperwidth,ht=4ex,dp=1.5ex,leftskip=0.3cm,rightskip=0.3cm]{palette primary}
+          \usebeamerfont{frametitle}\insertsectionnumber.~~\insertframetitle
+      \end{beamercolorbox}
+  }
+
+  % --- FOOTLINE (Using \def variables) ---
   \setbeamertemplate{footline}{
     \leavevmode%
     \hbox{%
@@ -68,33 +86,52 @@
       \usebeamerfont{title in head/foot}\MyShortTitle
     \end{beamercolorbox}%
     \begin{beamercolorbox}[wd=.3\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
-      \usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}
-      \insertframenumber{} / \inserttotalframenumber\hspace*{2ex} 
+      \usebeamerfont{date in head/foot}\MyDate\hspace*{2em}
+      \insertframenumber{} / \inserttotalframenumber\hspace*{2ex}
     \end{beamercolorbox}}%
     \vskip0pt%
   }
 
-  % --- BEAMER COLORS ---
+  % --- THEME COLORS ---
   \setbeamercolor{structure}{fg=SecondaryColor}
   \setbeamercolor{palette primary}{bg=PrimaryColor, fg=white}
   \setbeamercolor{palette secondary}{bg=SecondaryColor, fg=white}
   \setbeamercolor{palette tertiary}{bg=AccentColor, fg=white}
   \setbeamercolor{titlelike}{parent=palette primary}
-  
   \setbeamercolor{author in head/foot}{fg=white, bg=PrimaryColor}
   \setbeamercolor{title in head/foot}{fg=white, bg=SecondaryColor}
   \setbeamercolor{date in head/foot}{fg=white, bg=AccentColor}
-  
   \setbeamercolor{block title}{bg=SecondaryColor, fg=white}
   \setbeamercolor{block body}{bg=LightAccent!20, fg=PrimaryColor}
   \setbeamercolor{alerted text}{fg=AlertColor}
   
-  % --- BEAMER FONTS ---
-  \setbeamerfont{author in head/foot}{size=\tiny}
-  \setbeamerfont{title in head/foot}{size=\tiny}
-  \setbeamerfont{date in head/foot}{size=\tiny}
+  % Fix for exampleblocks (making them blue instead of green)
+  \setbeamercolor{block title example}{bg=SecondaryColor, fg=white}
+  \setbeamercolor{block body example}{bg=LightAccent!10, fg=PrimaryColor}
+}
 
-  \setbeamertemplate{sections/subsections in toc}[ball]
-  \setbeamercolor{section number projected}{bg=PrimaryColor, fg=white}
-  \setbeamercolor{subsection number projected}{bg=SecondaryColor, fg=white}
+% ==========================================
+% 5. AUTOMATIC SECTION BREAK SLIDES
+% ==========================================
+\AtBeginSection[]
+{
+  \begin{frame}[plain, noframenumbering]
+    \vfill
+    \centering
+    \begin{minipage}{0.9\textwidth}
+        \begin{beamercolorbox}[sep=12pt,center,rounded=true]{palette primary}
+            \centering
+            % Overrides hyperref link color for this frame
+            \hypersetup{linkcolor=white}
+            
+            {\normalsize \textbf{SECTION \thesection}} \\
+            \vspace{0.2cm}
+            {\color{white!30}\rule{0.7\textwidth}{0.6pt}} \\
+            \vspace{0.4cm}
+            {\LARGE \textbf{\insertsection}}
+            \vspace{0.3cm}
+        \end{beamercolorbox}
+    \end{minipage}
+    \vfill
+  \end{frame}
 }
