@@ -2,6 +2,7 @@
 
 \section{The FIM Problem}
 
+% --- Slide 1: Origins & Definitions ---
 \begin{frame}{Origins and Definition}
     \begin{itemize}
         \item \textbf{Market Basket Analysis:} The historical root of FIM. 
@@ -18,6 +19,7 @@
     \end{alertblock}
 \end{frame}
 
+% --- Slide 2: Illustrative Example ---
 \begin{frame}{Illustrative Example}
     \begin{columns}
         \begin{column}{0.45\textwidth}
@@ -37,24 +39,134 @@
             \scriptsize
             \begin{table}
                 \centering
-                \begin{tabular}{|l|l|l|}
+                \begin{tabular}{|l|l|l|l|}
                 \hline
-                \textbf{1 item} & \textbf{2 items} & \textbf{3 items} \\ \hline
-                $\{a\}: 7$ & $\{a, c\}: 4$ & $\{a, c, d\}: 3$ \\
-                $\{b\}: 3$ & $\{a, d\}: 5$ & $\{a, c, e\}: 3$ \\
-                $\{c\}: 7$ & $\{a, e\}: 6$ & $\{a, d, e\}: 4$ \\
-                $\{d\}: 6$ & $\{b, c\}: 3$ & \\
-                $\{e\}: 7$ & $\{c, d\}: 4$ & \\
-                           & $\{c, e\}: 4$ & \\
-                           & $\{d, e\}: 4$ & \\ \hline
+                \textbf{0 items} & \textbf{1 item} & \textbf{2 items} & \textbf{3 items} \\ \hline
+                $\emptyset: 10$ & $\{a\}: 7$ & $\{a, c\}: 4$ & $\{a, c, d\}: 3$ \\
+                                & $\{b\}: 3$ & $\{a, d\}: 5$ & $\{a, c, e\}: 3$ \\
+                                & $\{c\}: 7$ & $\{a, e\}: 6$ & $\{a, d, e\}: 4$ \\
+                                & $\{d\}: 6$ & $\{b, c\}: 3$ & \\
+                                & $\{e\}: 7$ & $\{c, d\}: 4$ & \\
+                                &            & $\{c, e\}: 4$ & \\
+                                &            & $\{d, e\}: 4$ & \\ \hline
                 \end{tabular}
             \end{table}
         \end{column}
     \end{columns}
+\end{frame}
+
+% --- Slide 3: The Antimonotonicity Rule ---
+\begin{frame}{The Antimonotonicity Rule}
+    \begin{itemize}
+        \item \textbf{The Core Principle:} The support of an itemset can never exceed the support of its subsets.
+        \item \textbf{Formal Rule:} $\forall I, J: I \subseteq J \implies s_{\mathcal{T}}(I) \geq s_{\mathcal{T}}(J)$.
+    \end{itemize}
 
     \vfill
 
-    \begin{alertblock}{The Search Space Challenge}
-        Even for a base of only 5 items, there are $2^5 = 32$ possible itemsets. As $|\mathcal{B}|$ grows, the number of candidates becomes the primary computational bottleneck.
+    \begin{alertblock}{The Pruning (Downward Closure) Property}
+        \centering
+        If an itemset is \textbf{infrequent}, all of its supersets are also \textbf{infrequent}.
     \end{alertblock}
+
+    \vfill
+
+    \begin{itemize}
+        \item \textbf{Search Strategy:} We "cut" the search lattice. If a node fails $s_{min}$, its entire downward branch is discarded.
+        \item This defines a spatial boundary in the lattice: the \textbf{Frequent Border}.
+    \end{itemize}
+\end{frame}
+
+% --- Slide 4: COMPLETE HASSE DIAGRAM ---
+\begin{frame}{The Complete Hasse Diagram}
+    \centering
+    \begin{tikzpicture}[
+        node_style/.style={draw, rectangle, minimum height=0.3cm, minimum width=0.6cm, font=\tiny\ttfamily},
+        freq/.style={fill=blue!20, node_style}, 
+        infr/.style={fill=white, node_style},   
+        x=1.1cm, y=1.2cm
+    ]
+    
+    % Level 0 & 1
+    \node[freq] (null) at (4.5, 1) {$\emptyset$};
+    \node[freq] (a) at (0.5,0) {a}; \node[freq] (b) at (2.5,0) {b}; \node[freq] (c) at (4.5,0) {c}; \node[freq] (d) at (6.5,0) {d}; \node[freq] (e) at (8.5,0) {e};
+    \foreach \x in {a,b,c,d,e} \draw (null) -- (\x);
+    % Level 2
+    \node[infr] (ab) at (0,-1.2) {ab}; \node[freq] (ac) at (1,-1.2) {ac}; \node[freq] (ad) at (2,-1.2) {ad}; 
+    \node[freq] (ae) at (3,-1.2) {ae}; \node[freq] (bc) at (4,-1.2) {bc}; \node[infr] (bd) at (5,-1.2) {bd};
+    \node[infr] (be) at (6,-1.2) {be}; \node[freq] (cd) at (7,-1.2) {cd}; \node[freq] (ce) at (8,-1.2) {ce}; \node[freq] (de) at (9,-1.2) {de};
+    \foreach \p/\c in {a/ab, a/ac, a/ad, a/ae, b/ab, b/bc, b/bd, b/be, c/ac, c/bc, c/cd, c/ce, d/ad, d/bd, d/cd, d/de, e/ae, e/be, e/ce, e/de} \draw (\p) -- (\c);
+    % Level 3
+    \node[infr] (abc) at (0.5,-2.4) {abc}; \node[infr] (abd) at (1.5,-2.4) {abd}; \node[infr] (abe) at (2.5,-2.4) {abe};
+    \node[freq] (acd) at (3.5,-2.4) {acd}; \node[freq] (ace) at (4.5,-2.4) {ace}; \node[freq] (ade) at (5.5,-2.4) {ade};
+    \node[infr] (bcd) at (6.5,-2.4) {bcd}; \node[infr] (bce) at (7.5,-2.4) {bce}; \node[infr] (bde) at (8.5,-2.4) {bde}; \node[infr] (cde) at (9.5,-2.4) {cde};
+    \foreach \p/\c in {ab/abc, ab/abd, ab/abe, ac/abc, ac/acd, ac/ace, ad/abd, ad/acd, ad/ade, ae/abe, ae/ace, ae/ade, bc/abc, bc/bcd, bc/bce, bd/abd, bd/bcd, bd/bde, be/abe, be/bce, be/bde, cd/acd, cd/bcd, cd/cde, ce/ace, ce/bce, ce/cde, de/ade, de/bde, de/cde} \draw (\p) -- (\c);
+    % Level 4 & 5
+    \node[infr] (abcd) at (1.5,-3.6) {abcd}; \node[infr] (abce) at (3,-3.6) {abce}; \node[infr] (abde) at (4.5,-3.6) {abde}; \node[infr] (acde) at (6,-3.6) {acde}; \node[infr] (bcde) at (7.5,-3.6) {bcde};
+    \node[infr] (abcde) at (4.5,-4.8) {abcde};
+    \foreach \p/\c in {abc/abcd, abc/abce, abd/abcd, abd/abde, abe/abce, abe/abde, acd/abcd, acd/acde, ace/abce, ace/acde, ade/abde, ade/acde, bcd/abcd, bcd/bcde, bce/abce, bce/bcde, bde/abde, bde/bcde, cde/acde, cde/bcde} \draw (\p) -- (\c);
+    \foreach \p in {abcd, abce, abde, acde, bcde} \draw (\p) -- (abcde);
+    \end{tikzpicture}
+\end{frame}
+
+% --- Slide 5: PRECISE CURVILINEAR FRONTIER ---
+\begin{frame}{The Frequent Border (Spatial Boundary)}
+    \centering
+    \begin{tikzpicture}[
+        node_style/.style={draw, rectangle, minimum height=0.3cm, minimum width=0.6cm, font=\tiny\ttfamily},
+        freq/.style={fill=blue!20, node_style}, 
+        infr/.style={fill=white, node_style},   
+        x=1.1cm, y=1.2cm
+    ]
+    
+    % Level 0, 1, 2, 3, 4, 5 Nodes (Positions locked)
+    \node[freq] (null) at (4.5, 1) {$\emptyset$};
+    \node[freq] (a) at (0.5,0) {a}; \node[freq] (b) at (2.5,0) {b}; \node[freq] (c) at (4.5,0) {c}; \node[freq] (d) at (6.5,0) {d}; \node[freq] (e) at (8.5,0) {e};
+    \node[infr] (ab) at (0,-1.2) {ab}; \node[freq] (ac) at (1,-1.2) {ac}; \node[freq] (ad) at (2,-1.2) {ad}; 
+    \node[freq] (ae) at (3,-1.2) {ae}; \node[freq] (bc) at (4,-1.2) {bc}; \node[infr] (bd) at (5,-1.2) {bd};
+    \node[infr] (be) at (6,-1.2) {be}; \node[freq] (cd) at (7,-1.2) {cd}; \node[freq] (ce) at (8,-1.2) {ce}; \node[freq] (de) at (9,-1.2) {de};
+    \node[infr] (abc) at (0.5,-2.4) {abc}; \node[infr] (abd) at (1.5,-2.4) {abd}; \node[infr] (abe) at (2.5,-2.4) {abe};
+    \node[freq] (acd) at (3.5,-2.4) {acd}; \node[freq] (ace) at (4.5,-2.4) {ace}; \node[freq] (ade) at (5.5,-2.4) {ade};
+    \node[infr] (bcd) at (6.5,-2.4) {bcd}; \node[infr] (bce) at (7.5,-2.4) {bce}; \node[infr] (bde) at (8.5,-2.4) {bde}; \node[infr] (cde) at (9.5,-2.4) {cde};
+    \node[infr] (abcd) at (1.5,-3.6) {abcd}; \node[infr] (abce) at (3,-3.6) {abce}; \node[infr] (abde) at (4.5,-3.6) {abde}; \node[infr] (acde) at (6,-3.6) {acde}; \node[infr] (bcde) at (7.5,-3.6) {bcde};
+    \node[infr] (abcde) at (4.5,-4.8) {abcde};
+
+    % Edges (Implicit background)
+    \foreach \p/\c in {null/a, null/b, null/c, null/d, null/e, a/ab, a/ac, a/ad, a/ae, b/ab, b/bc, b/bd, b/be, c/ac, c/bc, c/cd, c/ce, d/ad, d/bd, d/cd, d/de, e/ae, e/be, e/ce, e/de, ab/abc, ac/acd, ac/ace, ad/acd, ad/ade, ae/ace, ae/ade, bc/bcd, cd/acd, cd/bcd, cd/cde, ce/ace, ce/cde, de/ade, de/cde} \draw[gray!20] (\p) -- (\c);
+
+    % PRECISE FRONTIER CURVE
+    % It must go BELOW ac, ad, ae, bc, cd, ce, de
+    % It must go BELOW acd, ace, ade
+    % It must go ABOVE ab, bd, be, abc, bcd, etc.
+    \draw[red, ultra thick, dashed] 
+        (-0.5, -0.6) % Start left of 'a' level
+        .. controls (0, -0.7) and (0.3, -1.8) .. (0.7, -1.8) % Dip under 'ab' but stay above 'abc'
+        .. controls (1.5, -1.8) and (2.5, -2.8) .. (4.5, -3) % Dip deep to include acd, ace, ade
+        .. controls (6, -2.8) and (7, -1.8) .. (10, -1.8); % Wrap back up toward 'de'
+
+    \node[red, font=\small\bfseries] at (8, -2.8) {Frequent Border};
+
+    \end{tikzpicture}
+\end{frame}
+
+% --- Slide 6: The Bottleneck ---
+\begin{frame}{The Computational Bottleneck}
+    \begin{itemize}
+        \item \textbf{Candidate Explosion:} Even with pruning, $C_k$ can reach millions in massive datasets.
+        \item \textbf{Frequency Counting:} The most expensive step. Identifying which candidates are present in each transaction.
+    \end{itemize}
+
+    \vfill
+
+    \begin{alertblock}{Limitations of Standard Structures}
+        \begin{enumerate}
+            \item \textbf{Memory Locality:} Excessive pointer hopping.
+            \item \textbf{Traversal Overhead:} Deep, empty branches in sparse data.
+            \item \textbf{Latency:} $O(\log n)$ lookup vs the required $O(1)$.
+        \end{enumerate}
+    \end{alertblock}
+    
+    \vfill
+    \centering
+    \textit{This motivates the need for the \textbf{Hash Table Trie (HTT)}.}
 \end{frame}
