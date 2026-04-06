@@ -2,63 +2,66 @@
 
 \section{Introduction \& Motivation}
 
-% --- SLIDE 1: The "Why" (Market Basket Problem) ---
-\begin{frame}{Introduction: The Market Basket Problem}
-    \begin{columns}[c, onlytextwidth]
-        \begin{column}{0.38\textwidth}
-            \begin{itemize}
-                \item \textbf{\small The Scenario:} \scriptsize A retail store processes millions of transactions daily.
-                \vfill
-                \item \textbf{\small The Question:} 
-                \begin{itemize}
-                    \item \scriptsize Which items are frequently bought together?
-                    \item \scriptsize $\{Milk, Bread\} \rightarrow \{Eggs\}$?
-                    \item \scriptsize $\{Beer\} \rightarrow \{Diapers\}$?
-                \end{itemize}
-                \vfill
-                \item \textbf{\small The Value:} 
-                \begin{itemize}
-                    \item \scriptsize Cross-selling \& Promotions.
-                    \item \scriptsize Inventory management \& Layout.
-                    \item \scriptsize Catalog optimization.
-                \end{itemize}
-            \end{itemize}
-        \end{column}
+% --- SLIDE 1: The Pipeline (Full Width Visual) ---
+\begin{frame}{The Market Basket Problem: From Paper to Patterns}
+    \centering
+    \begin{tikzpicture}[scale=1.1, every node/.style={transform shape}]
+        % --- STAGE 1: Physical Data ---
+        \node[font=\bfseries\small, gray] at (1.4, 6.2) {1. Physical Transactions};
+        \draw[thick, fill=white] (0,2) rectangle (2.8,5.8);
+        \draw[thick] (0,2) -- (0.2,1.8) -- (0.4,2) -- (0.6,1.8) -- (0.8,2) -- (1.0,1.8) -- (1.2,2) -- (1.4,1.8) -- (1.6,2) -- (1.8,1.8) -- (2.0,2) -- (2.2,1.8) -- (2.4,2) -- (2.6,1.8) -- (2.8,1.8) -- (2.8,2);
+        
+        \node at (1.4, 5.4) {\textbf{\tiny RECEIPT}};
+        \node[anchor=west] at (0.1, 4.8) {\tiny MILK ........ \$2.5};
+        \node[anchor=west] at (0.1, 4.4) {\tiny BREAD ..... \$1.8};
+        \node[anchor=west] at (0.1, 4.0) {\tiny BEER ........ \$12};
+        \node[anchor=west] at (0.1, 3.6) {\tiny DIAPERS .. \$25};
+        
+        % --- Transition Arrow 1 ---
+        \draw[->, ultra thick, gray!30] (3.0, 3.8) -- (4.0, 3.8) node[midway, above, font=\tiny\itshape, text=gray] {Digitize};
 
-        \begin{column}{0.60\textwidth}
-            \centering
-            \begin{tikzpicture}[scale=0.75]
-                % --- The Receipt (Tuned for price alignment) ---
-                \draw[thick, fill=white] (0,2) rectangle (3.0,6);
-                \draw[thick] (0,2) -- (0.2,1.8) -- (0.4,2) -- (0.6,1.8) -- (0.8,2) -- (1.0,1.8) -- (1.2,2) -- (1.4,1.8) -- (1.6,2) -- (1.8,1.8) -- (2.0,2) -- (2.2,1.8) -- (2.4,2) -- (2.6,1.8) -- (2.8,2) -- (3.0,1.8) -- (3.0,2);
-                
-                \node at (1.5, 5.6) {\textbf{\tiny RECEIPT}};
-                \node[anchor=west] at (0.1, 5.0) {\tiny MILK ........ \$2.5};
-                \node[anchor=west] at (0.1, 4.6) {\tiny BREAD ..... \$1.8};
-                \node[anchor=west] at (0.1, 4.2) {\tiny BEER ........ \$12};
-                \node[anchor=west] at (0.1, 3.8) {\tiny DIAPERS .. \$25};
-                
-                % --- Transition Arrow ---
-                \draw[->, ultra thick, gray!40] (3.1, 4) -- (4.1, 4);
+        % --- STAGE 2: Digital Representation ---
+        \node[font=\bfseries\small, PrimaryColor] at (6.0, 6.2) {2. Digital "Baskets"};
+        \draw[thick, rounded corners, fill=PrimaryColor!5] (4.2, 2.3) rectangle (7.8, 5.3);
+        
+        \node[draw, fill=PrimaryColor!20, inner sep=2pt] at (6.0, 4.3) {\tiny T1: \{Milk, Bread, Beer, Diapers\}};
+        \node[draw, fill=white, inner sep=2pt] at (6.0, 3.6) {\tiny T2: \{Milk, Eggs, Bread\}};
+        \node[draw, fill=white, inner sep=2pt] at (6.0, 2.9) {\tiny T3: \{Beer, Diapers, Chips\}};
+        \node at (6.0, 2.5) {\tiny $\vdots$};
 
-                % --- The Database (Properly spaced) ---
-                \draw[thick, rounded corners, fill=PrimaryColor!5] (4.2, 2.5) rectangle (8.0, 5.5);
-                \node at (6.1, 5.2) {\tiny \textbf{Digital Records}};
-                
-                \node[draw, fill=PrimaryColor!20, inner sep=2pt] at (6.1, 4.5) {\tiny T1: \{Milk, Bread, Beer, Diapers\}};
-                \node[draw, fill=white, inner sep=2pt] at (6.1, 3.8) {\tiny T2: \{Milk, Eggs, Bread\}};
-                \node[draw, fill=white, inner sep=2pt] at (6.1, 3.1) {\tiny T3: \{Beer, Diapers, Chips\}};
-                \node at (6.1, 2.7) {\tiny $\vdots$};
-
-                % --- Final Goal Arrow ---
-                \draw[->, ultra thick, SecondaryColor] (6.1, 2.3) -- (6.1, 0.8);
-                \node[below, SecondaryColor, font=\bfseries] at (6.1, 0.8) {Discover Patterns!};
-            \end{tikzpicture}
-        \end{column}
-    \end{columns}
+        % --- Transition Arrow 2 ---
+        \draw[->, ultra thick, SecondaryColor] (6.0, 2.1) -- (6.0, 0.5);
+        
+        % --- STAGE 3: Knowledge Discovery ---
+        \node[below, SecondaryColor, font=\bfseries] at (6.0, 0.5) {3. Discover Frequent Itemsets};
+        \node[below, font=\scriptsize, text=gray] at (6.0, 0.1) {Search Space: $2^n$ Subsets};
+    \end{tikzpicture}
 \end{frame}
 
-% --- SLIDE 2: The Technical Challenge ---
+% --- SLIDE 2: Simple Examples & Goal ---
+\begin{frame}{Mining Actionable Patterns}
+    \textbf{Examples of Association Rules:}
+    \vspace{0.3cm}
+    \begin{itemize}
+        \item \small $\{Milk, Bread\} \implies \{Eggs\}$
+        \item \small $\{Beer\} \implies \{Diapers\}$
+        \item \small $\{Wine\} \implies \{Cheese\}$
+        \item \small $\{Laptop\} \implies \{Mouse, Keyboard\}$
+    \end{itemize}
+
+    \vfill
+
+    \begin{alertblock}{The Data Mining Goal}
+        \centering \textbf{Find all subsets of items (itemsets) that appear in at least $s$ transactions within a massive dataset.}
+    \end{alertblock}
+    
+    \vspace{0.4cm}
+    \begin{itemize}
+        \item \small \textbf{Applications:} Cross-selling, inventory management, and store layout optimization.
+    \end{itemize}
+\end{frame}
+
+% --- SLIDE 3: The Technical Challenge ---
 \begin{frame}{The Technical Challenge}
     \begin{columns}[T, onlytextwidth]
         \begin{column}{0.58\textwidth}
@@ -72,7 +75,7 @@
                 \item \textbf{A Temporal Perspective:}
                 \begin{itemize}
                     \item The Universe is $\approx 13.8$ billion years old.
-                    \item This single task takes \textbf{$\approx$ 3,000x longer} than the entire history of time.
+                    \item This task takes \textbf{$\approx$ 3,000x longer} than the history of time.
                 \end{itemize}
             \end{itemize}
         \end{column}
@@ -102,14 +105,13 @@
     \end{columns}
 
     \vfill 
-    % MOVED: Outside columns to span full width and avoid footer collision
     \begin{alertblock}{}
         \centering \footnotesize
         \textbf{The Bottom Line:} Even with state-of-the-art computing power, the exponential complexity remains the fundamental bottleneck.
     \end{alertblock}
 \end{frame}
 
-% --- SLIDE 3: The Infrastructure Solution ---
+% --- SLIDE 4: The Infrastructure Solution ---
 \begin{frame}{The Infrastructure Solution}
     \begin{columns}[c, onlytextwidth]
         \begin{column}{0.5\textwidth}
