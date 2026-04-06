@@ -84,26 +84,26 @@
   \end{columns}
 \end{frame}
 
-% --- Slide 3: Table 1 (Datasets) ---
+% --- Slide 3: Table 1 (Full Dataset Properties) ---
 \begin{frame}{Experimental Results: Dataset Properties}
     \centering
-    \footnotesize
+    \scriptsize
     \textbf{Table 1: Datasets used in the experiments}
     \vspace{0.2cm}
-    \begin{tabular}{|l|l|r|r|c|}
+    \begin{tabular}{|l|r|r|c|c|}
         \hline
-        \textbf{Dataset} & \textbf{Type} & \textbf{Trans.} & \textbf{Items} & \textbf{Avg. Width} \\ \hline
-        c20d10k          & Synthetic     & 10,000          & 192            & 20                  \\ \hline
-        chess            & Real-life     & 3,196           & 75             & 37                  \\ \hline
-        mushroom         & Real-life     & 8,124           & 119            & 23                  \\ \hline
-        BMS\_WebView\_1  & Real-life     & 59,602          & 497            & 2.5                 \\ \hline
-        BMS\_WebView\_2  & Real-life     & 77,512          & 3,340          & 5                   \\ \hline
-        T10I4D100K       & Synthetic     & 100,000         & 870            & 10                  \\ \hline
-        T40I10D100K      & Synthetic     & 100,000         & 1,000          & 40                  \\ \hline
+        \textbf{Dataset} & \textbf{Transactions} & \textbf{Items} & \textbf{Avg. Width} & \textbf{Characteristic} \\ \hline
+        c20d10k          & 10,000                & 192            & 20                  & Dense          \\ \hline
+        chess            & 3,196                 & 75             & 37                  & Extremely Dense \\ \hline
+        mushroom         & 8,124                 & 119            & 23                  & Dense          \\ \hline
+        BMS\_WebView\_1  & 59,602                & 497            & 2.5                 & Sparse         \\ \hline
+        BMS\_WebView\_2  & 77,512                & 3,340          & 5                   & Sparse         \\ \hline
+        T10I4D100K       & 100,000               & 870            & 10                  & Sparse         \\ \hline
+        T40I10D100K      & 100,000               & 1,000          & 40                  & Dense          \\ \hline
     \end{tabular}
     \vfill
     \begin{alertblock}{Dataset Diversity}
-        \scriptsize The selection spans from sparse transaction logs to dense datasets, allowing for a robust evaluation of the HTT architecture across different data characteristics.
+        \scriptsize The benchmark selection spans from sparse transaction logs to dense datasets, allowing for a robust evaluation of the HTT architecture across different data characteristics.
     \end{alertblock}
 \end{frame}
 
@@ -139,14 +139,16 @@
     \end{beamercolorbox}
     \vspace{0.1cm}
     \small
-    \begin{tabular}{|l|c|c|c|}
+    \begin{tabular}{|l|c|c|c|c|}
         \hline
-        \textbf{Dataset} & \textbf{HT (Baseline)} & \textbf{Trie} & \textbf{HTT} \\ \hline
-        BMS\_WebView\_1/2 & 1.0x                & \textbf{> 8.0x} & \textbf{> 8.4x} \\ \hline
-        T10I4D100K       & 1.0x                & 5.9x            & \textbf{6.2x}   \\ \hline
-        T40I10D100K      & 1.0x                & 5.8x            & \textbf{6.1x}   \\ \hline
-        Mushroom / Chess & 1.0x                & 1.9x            & \textbf{2.1x}   \\ \hline
-        c20d10k          & 1.0x                & 1.7x            & \textbf{1.8x}   \\ \hline
+        \textbf{Dataset} & \textbf{HT} & \textbf{Trie} & \textbf{HTT} & \textbf{Characteristic} \\ \hline
+        c20d10k          & 1.0x        & 1.7x          & \textbf{1.8x} & Dense         \\ \hline
+        chess            & 1.0x        & 1.9x          & \textbf{2.1x} & E. Dense      \\ \hline
+        mushroom         & 1.0x        & 1.9x          & \textbf{2.1x} & Dense         \\ \hline
+        BMS\_WebView\_1  & 1.0x        & 8.1x          & \textbf{8.4x} & Sparse        \\ \hline
+        BMS\_WebView\_2  & 1.0x        & 8.1x          & \textbf{8.4x} & Sparse        \\ \hline
+        T10I4D100K       & 1.0x        & 5.9x          & \textbf{6.2x} & Sparse        \\ \hline
+        T40I10D100K      & 1.0x        & 5.8x          & \textbf{6.1x} & Dense         \\ \hline
     \end{tabular}
     \vfill
     \begin{alertblock}{The RDD Conclusion}
