@@ -1,19 +1,60 @@
 % sections/03_the_problem.tex
 
 \section{The FIM Problem}
-\begin{frame}{The FIM Problem}
+
+\begin{frame}{Origins and Definition}
     \begin{itemize}
-        \item \textbf{Frequent Itemset Mining (FIM):} Finding subsets with frequency $\geq$ \textit{minsup}.
-        \item \textbf{The ``Bundle Deal'' Analogy:} 
-        \begin{itemize}
-            \item If customers buy GPUs, what else do they buy?
-            \item $n=1000$ items lead to $2^{1000}$ possible combinations.
-        \end{itemize}
-        \vfill
-        \item \textbf{The Apriori Principle:} 
-        \begin{quote}
-            ``Any subset of a frequent itemset must also be frequent.''
-        \end{quote}
-        \item We prune the space, but we need efficient storage for millions of candidates.
+        \item \textbf{Market Basket Analysis:} The historical root of FIM. 
+        \item \textbf{The Item Base:} Let $\mathcal{B} = \{i_1, \dots, i_n\}$ be the set of all possible items.
+        \item \textbf{Itemsets:} Any subset $I \subseteq \mathcal{B}$.
+        \item \textbf{Transactions:} A database $\mathcal{T} = (t_1, \dots, t_m)$ where each transaction $t_k$ is an itemset.
     \end{itemize}
+
+    \vfill
+
+    \begin{alertblock}{Frequent Itemset Mining (FIM)}
+        The task of discovering all itemsets $I$ that appear in the database $\mathcal{T}$ with a frequency (support) greater than or equal to a threshold $s_{min}$:
+        \[ s_{\mathcal{T}}(I) = |\{k \in \{1, \dots, m\} \mid I \subseteq t_k\}| \geq s_{min} \]
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Illustrative Example}
+    \begin{columns}
+        \begin{column}{0.45\textwidth}
+            \textbf{Transaction Database ($\mathcal{T}$)}
+            \footnotesize
+            \begin{itemize}
+                \item[0:] $\{a, d, e\}$ \quad 5: $\{a, c, d\}$
+                \item[1:] $\{b, c, d\}$ \quad 6: $\{b, c\}$
+                \item[2:] $\{a, c, e\}$ \quad 7: $\{a, c, d, e\}$
+                \item[3:] $\{a, c, d, e\}$ \ 8: $\{b, c, e\}$
+                \item[4:] $\{a, e\}$ \quad 9: $\{a, d, e\}$
+            \end{itemize}
+        \end{column}
+        
+        \begin{column}{0.55\textwidth}
+            \textbf{Frequent Itemsets ($s_{min} = 3$)}
+            \scriptsize
+            \begin{table}
+                \centering
+                \begin{tabular}{|l|l|l|}
+                \hline
+                \textbf{1 item} & \textbf{2 items} & \textbf{3 items} \\ \hline
+                $\{a\}: 7$ & $\{a, c\}: 4$ & $\{a, c, d\}: 3$ \\
+                $\{b\}: 3$ & $\{a, d\}: 5$ & $\{a, c, e\}: 3$ \\
+                $\{c\}: 7$ & $\{a, e\}: 6$ & $\{a, d, e\}: 4$ \\
+                $\{d\}: 6$ & $\{b, c\}: 3$ & \\
+                $\{e\}: 7$ & $\{c, d\}: 4$ & \\
+                           & $\{c, e\}: 4$ & \\
+                           & $\{d, e\}: 4$ & \\ \hline
+                \end{tabular}
+            \end{table}
+        \end{column}
+    \end{columns}
+
+    \vfill
+
+    \begin{alertblock}{The Search Space Challenge}
+        Even for a base of only 5 items, there are $2^5 = 32$ possible itemsets. As $|\mathcal{B}|$ grows, the number of candidates becomes the primary computational bottleneck.
+    \end{alertblock}
 \end{frame}
