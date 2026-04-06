@@ -2,6 +2,7 @@
 
 \section{Experimental Results}
 
+% --- Slide 1: Hardware Specs ---
 \begin{frame}{Experimental Results: Hardware Specifications}
   \begin{columns}[onlytextwidth, T]
     \column{0.6\textwidth}
@@ -17,12 +18,10 @@
     \column{0.4\textwidth}
       \centering
       \begin{tikzpicture}[scale=0.75]
-        % 2 physical CPUs
         \draw[thick, fill=gray!10] (0,1.2) rectangle (1.1,2.3);
         \draw[thick, fill=gray!10] (1.4,1.2) rectangle (2.5,2.3);
         \node at (1.25,2.6) {\tiny 2x Physical CPUs};
 
-        % 4 RAM Sticks
         \foreach \x in {0, 0.35, 0.7, 1.05} {
           \draw[thick, fill=green!15] (3.0+\x, 0.5) rectangle (3.0+\x+0.2, 3);
           \foreach \y in {0.7, 1.2, 1.7, 2.2, 2.7}
@@ -30,7 +29,6 @@
         }
         \node[below, scale=0.7] at (3.6,0.5) {16 GB RAM};
         
-        % HDD Cylinder Icon - Centered at x=1.25
         \begin{scope}[yshift=-1.2cm, xshift=1.25cm]
             \draw[thick, fill=gray!20] (0,0.3) ellipse (0.5 and 0.15);
             \draw[thick] (-0.5,0) -- (-0.5,0.3);
@@ -39,11 +37,7 @@
             \node[below, scale=0.7] at (0,-0.1) {1 TB HDD};
         \end{scope}
         
-        % Connections
-        % Blue connection line at y=0.8
         \draw[thick, blue!50] (1.25,1.2) -- (1.25,0.8) -- (3.6,0.8);
-        
-        % Shorter Centered Arrow from HDD (stops at y=0.7 to avoid collision)
         \draw[thick, gray!50, ->] (1.25,-0.7) -- (1.25,0.7);
       \end{tikzpicture}
   \end{columns}
@@ -54,6 +48,7 @@
   \end{alertblock}
 \end{frame}
 
+% --- Slide 2: Software Stack ---
 \begin{frame}{Experimental Results: Software \& Memory Mode}
   \begin{columns}[onlytextwidth, T]
     \column{0.6\textwidth}
@@ -89,41 +84,37 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{Experimental Results: Performance Analysis}
-    \begin{columns}[onlytextwidth, T]
-        \column{0.5\textwidth}
-        \begin{itemize}
-            \item \textbf{Observation 1: Hash Tree (HT) Bottleneck}
-            \begin{itemize}
-                \item High collision rates and linear search hinder performance.
-            \end{itemize}
-            \item \textbf{Observation 2: Trie \& HTT Efficiency}
-            \begin{itemize}
-                \item Significant \textbf{8x speedup} observed on BMS datasets.
-            \end{itemize}
-            \item \textbf{Observation 3: Spark Advantage}
-            \begin{itemize}
-                \item Hash Table Trie (HTT) architecture minimizes "cache penalties."
-            \end{itemize}
-        \end{itemize}
-
-        \column{0.5\textwidth}
-        \centering
-        \vspace{0.5cm}
-        \begin{beamercolorbox}[sep=10pt,center,rounded=true]{block body}
-            \textit{Placeholder for Fig 4:}\\
-            \textit{Execution Time Plots}\\
-            \textit{(a) through (g)}
-        \end{beamercolorbox}
-    \end{columns}
+% --- Slide 3: Performance I (2x2 Plot - Mushroom/Chess) ---
+\begin{frame}{Performance Analysis: Datasets (a) to (d)}
+    \vspace{-0.2cm}
+    \begin{center}
+        \includegraphics[height=0.72\textheight, width=0.95\textwidth, keepaspectratio]{plots_2x2.png}
+    \end{center}
+    \vspace{-0.3cm}
+    \begin{itemize}
+        \item \footnotesize \textbf{Observation:} On dense datasets like \textit{Mushroom} and \textit{Chess}, HTT maintains a steady \textbf{2x speedup} by optimizing CPU cache usage during RDD lookups.
+    \end{itemize}
 \end{frame}
 
+% --- Slide 4: Performance II (Triangular Plot - BMS) ---
+\begin{frame}{Performance Analysis: Datasets (e) to (g)}
+    \vspace{-0.2cm}
+    \begin{center}
+        \includegraphics[height=0.72\textheight, width=0.95\textwidth, keepaspectratio]{plots_triangular.png}
+    \end{center}
+    \vspace{-0.3cm}
+    \begin{itemize}
+        \item \footnotesize \textbf{Observation:} For sparse datasets (BMS1/BMS2), the efficiency of the Trie-based architecture becomes even more apparent, achieving an \textbf{8x performance gain}.
+    \end{itemize}
+\end{frame}
+
+% --- Slide 5: Summary Table ---
 \begin{frame}{Experimental Results: Summary Table}
     \centering
-    \begin{beamercolorbox}[sep=8pt,center,rounded=true]{block body}
+    \begin{beamercolorbox}[sep=6pt,center,rounded=true]{block body}
         \textbf{Relative Speedup vs. Hash Tree (HT)}
     \end{beamercolorbox}
-    \vspace{0.2cm}
+    \vspace{0.1cm}
     \begin{tabular}{|l|c|c|c|}
         \hline
         \textbf{Dataset} & \textbf{HT (Baseline)} & \textbf{Trie} & \textbf{HTT} \\ \hline
@@ -133,6 +124,6 @@
     \end{tabular}
     \vfill
     \begin{alertblock}{The RDD Conclusion}
-        The results validate that within Spark, the computational efficiency of $O(1)$ lookups in the Hash Table Trie (HTT) justifies its memory footprint.
+        \small The results validate that within Spark, the computational efficiency of $O(1)$ lookups in the Hash Table Trie (HTT) justifies its memory footprint.
     \end{alertblock}
 \end{frame}
