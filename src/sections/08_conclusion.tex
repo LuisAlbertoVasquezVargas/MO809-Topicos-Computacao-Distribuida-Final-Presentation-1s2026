@@ -1,36 +1,93 @@
 % sections/08_conclusion.tex
 
 \section{Conclusion}
+
+% --- SLIDE 1: THE SEQUENTIAL CONTEXT ---
 \begin{frame}{Conclusion: The Sequential Context}
-    \begin{itemize}
-        \item \textbf{Theoretical Expectation:} 
-        \begin{itemize}
-            \item The \textbf{Hash Table Trie} was designed to accelerate itemset traversal by combining Trie logic with hashing.
-        \end{itemize}
-        \vfill
-        \item \textbf{Previous Practical Failure:} 
-        \begin{itemize}
-            \item In earlier sequential implementations, where \textbf{memory was a strict bottleneck}, the hashing overhead caused it to underperform.
-            \item It was often documented as the least efficient variant in non-distributed settings.
-        \end{itemize}
-    \end{itemize}
+    \begin{columns}[T]
+        \begin{column}{0.55\textwidth}
+            \begin{itemize}
+                \item \textbf{Theoretical Expectation:} 
+                \begin{itemize}
+                    \item The \textbf{Hash Table Trie} was designed to accelerate itemset traversal by combining Trie logic with hashing.
+                \end{itemize}
+                \vfill
+                \item \textbf{Previous Practical Failure:} 
+                \begin{itemize}
+                    \item In earlier sequential implementations, where \textbf{memory was a strict bottleneck}, the additional \textbf{cost of hashing} caused it to underperform.
+                    \item It was often documented as the least efficient variant in non-distributed settings.
+                \end{itemize}
+            \end{itemize}
+        \end{column}
+        
+        \begin{column}{0.45\textwidth}
+            \centering
+            \begin{tikzpicture}[scale=1.1, every node/.style={scale=0.9}]
+                \draw[->, thick] (0,0) -- (3,0) node[anchor=north] {\tiny RAM};
+                \draw[->, thick] (0,0) -- (0,2.8) node[anchor=east] {\tiny Time};
+                \draw[red, thick] (0.3,2.5) .. controls (0.6,0.6) and (1.5,0.4) .. (2.8,0.3);
+                \node[red, anchor=west] at (1.1,1.0) {\tiny Execution Delay};
+                \draw[dashed, blue] (0.8,0) -- (0.8,2.5);
+                \node[blue, rotate=90, anchor=south] at (0.8,1.4) {\tiny Bottleneck};
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
 \end{frame}
 
+% --- SLIDE 2: THE SPARK PARADIGM SHIFT (UPGRADED VISUALS) ---
 \begin{frame}{Conclusion: The Spark Paradigm Shift}
     \begin{itemize}
         \item \textbf{Distributed Advantage:} 
         \begin{itemize}
             \item Within Spark's \textbf{distributed memory (RDD)} architecture, the Hash Table Trie finally realizes its theoretical efficiency.
         \end{itemize}
-        \vfill
-        \item \textbf{Benchmark Results:} 
-        \begin{itemize}
-            \item Experimental data shows it performs \textbf{significantly better} than the traditional Hash Tree.
-            \item It maintains a slight edge over the standard Trie across most datasets.
-        \end{itemize}
     \end{itemize}
+
+    \begin{columns}[c]
+        \begin{column}{0.45\textwidth}
+            \centering
+            \begin{tikzpicture}[scale=0.65, every node/.style={scale=0.7}]
+                % Driver
+                \draw[fill=gray!20, thick] (1,3.5) rectangle (3,4.2) node[pos=.5]{\textbf{Driver}};
+                
+                % Cluster Manager Connector
+                \draw[thick] (2,3.5) -- (2,3);
+                \draw[fill=white, thick] (1.2,2.5) rectangle (2.8,3) node[pos=.5]{\tiny Cluster Mgr};
+                
+                % Worker Nodes / Executors
+                \foreach \x in {0, 2.5} {
+                    \draw[fill=blue!5, thick] (\x,0.5) rectangle (\x+1.8, 2);
+                    \node at (\x+0.9, 1.7) {\tiny Executor};
+                    % RDD Partitions inside
+                    \draw[fill=blue!20] (\x+0.2, 0.7) rectangle (\x+0.7, 1.3) node[pos=.5]{\tiny \textbf{HTT}};
+                    \draw[fill=blue!20] (\x+1.1, 0.7) rectangle (\x+1.6, 1.3) node[pos=.5]{\tiny \textbf{HTT}};
+                }
+                \node[below, blue!70!black] at (2.15, 0.4) {\tiny Distributed RDD Partitions};
+            \end{tikzpicture}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            \begin{itemize}
+                \item \textbf{Benchmark Results:} 
+                \begin{itemize}
+                    \item Experimental data shows it performs \textbf{significantly better} than the traditional Hash Tree.
+                    \item It maintains a slight edge over the standard Trie across most datasets.
+                \end{itemize}
+            \end{itemize}
+        \end{column}
+    \end{columns}
+
+    \vfill
+    \centering
+    \begin{tikzpicture}[scale=0.85]
+        \draw[thick, ->] (0,0) -- (6,0) node[right]{\tiny Performance};
+        \foreach \h/\c/\l/\w in {0.9/green!60!black/HT Trie/5.5, 0.5/blue!40/Std. Trie/4.8, 0.1/gray!40/Hash Tree/2.5} {
+            \fill[\c] (0,\h) rectangle (\w,\h+0.3);
+            \node[anchor=west] at (\w,\h+0.15) {\tiny \l};
+        }
+    \end{tikzpicture}
 \end{frame}
 
+% --- SLIDE 3: FINAL VERDICT ---
 \begin{frame}{Conclusion: Final Verdict}
     \begin{itemize}
         \item \textbf{In-Memory Optimization:} 
@@ -44,4 +101,13 @@
             \item Infrastructure alone (Spark) isn't enough; the underlying \textbf{data structure} must evolve to match the hardware.
         \end{itemize}
     \end{itemize}
+
+    \vfill
+    \centering
+    \begin{tikzpicture}
+        \node[draw, thick, rounded corners, fill=yellow!10, inner sep=10pt, align=center] {
+            \textbf{Key Takeaway}\\
+            \small Sequential "Worst" $\rightarrow$ Distributed "Best"
+        };
+    \end{tikzpicture}
 \end{frame}
