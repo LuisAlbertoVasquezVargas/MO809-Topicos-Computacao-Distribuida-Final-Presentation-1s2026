@@ -62,22 +62,34 @@
 \end{frame}
 
 % --- SLIDE 3: The Technical Challenge ---
-\begin{frame}{The Technical Challenge}
+\begin{frame}{The Technical Challenge: Complexity}
     \begin{columns}[T, onlytextwidth]
-        \begin{column}{0.58\textwidth}
-            \begin{itemize}
-                \item \textbf{The Barrier: Combinatorial Explosion}
-                \begin{itemize}
-                    \item For $n=100$: $2^{100} \approx 1.26 \times 10^{30}$ subsets.
-                    \item \textbf{Brute Force:} At $10^9$ ops/sec, processing 100 items takes $\approx 4 \times 10^{13}$ years.
-                \end{itemize}
-                \vspace{0.3cm}
-                \item \textbf{A Temporal Perspective:}
-                \begin{itemize}
-                    \item The Universe is $\approx 13.8$ billion years old.
-                    \item This task takes \textbf{$\approx$ 3,000x longer} than the history of time.
-                \end{itemize}
-            \end{itemize}
+        \begin{column}{0.60\textwidth}
+            \centering
+            \begin{tikzpicture}[scale=0.8]
+                % Axes
+                \draw[->, thick] (0,0) -- (5,0) node[right, font=\tiny] {Items ($n$)};
+                \draw[->, thick] (0,0) -- (0,4) node[above, font=\tiny] {Complexity};
+                
+                % Linear Curve O(n)
+                \draw[thick, gray!60] (0,0) -- (4,1) node[right, font=\tiny] {$O(n)$};
+                
+                % Exponential Curve O(2^n)
+                \draw[ultra thick, SecondaryColor] (0,0.1) .. controls (2,0.2) and (3,0.5) .. (4.2,3.8) 
+                    node[left, font=\tiny, xshift=-2pt] {$O(2^n)$};
+                
+                % Explosion Marker
+                \draw[dashed, red] (3.2,0) -- (3.2,1.2);
+                \node[red, font=\tiny\bfseries, anchor=west] at (3.2, 0.8) {Explosion!};
+                
+                % Annotations
+                \node[fill=white, draw=gray!30, rounded corners, font=\tiny, inner sep=2pt] at (2,3) {Brute Force fails at $n > 50$};
+            \end{tikzpicture}
+            
+            \vspace{0.4cm}
+            \scriptsize
+            $n=100 \implies 2^{100}$ subsets. \\
+            $\approx 3,000\times$ Age of Universe by Brute Force.
         \end{column}
 
         \begin{column}{0.38\textwidth}
@@ -107,7 +119,7 @@
     \vfill 
     \begin{alertblock}{}
         \centering \footnotesize
-        \textbf{The Bottom Line:} Even with state-of-the-art computing power, the exponential complexity remains the fundamental bottleneck.
+        \textbf{The Bottleneck:} Exponential $O(2^n)$ combinatorial complexity makes massive-scale association rule mining compute-bound.
     \end{alertblock}
 \end{frame}
 
