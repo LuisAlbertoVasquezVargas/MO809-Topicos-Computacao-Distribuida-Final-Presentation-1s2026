@@ -9,7 +9,7 @@
       \begin{itemize}
         \item \textbf{PC Build (Workstation):} 
         \begin{itemize}
-          \item \textbf{CPU:} Intel Xenon CPU E5-2620@2.10 GHz with 24 cores \textit{(Inferred Dual-Processor setup)}.
+          \item \textbf{CPU:} Intel Xenon CPU E5-2620@2.10 GHz with 24 cores \textit{(Dual-Processor setup)}.
           \item \textbf{RAM:} 16 GB DDR3 \textit{(Inferred Quad-Channel configuration)}.
           \item \textbf{Storage:} 1 TB of disk storage \textit{(Inferred HDD for HDFS layer)}.
         \end{itemize}
@@ -84,7 +84,30 @@
   \end{columns}
 \end{frame}
 
-% --- Slide 3: Performance I (2x2 Plot - Mushroom/Chess) ---
+% --- Slide 3: Table 1 (Datasets) ---
+\begin{frame}{Experimental Results: Dataset Properties}
+    \centering
+    \footnotesize
+    \textbf{Table 1: Datasets used in the experiments}
+    \vspace{0.2cm}
+    \begin{tabular}{|l|l|r|r|c|}
+        \hline
+        \textbf{Dataset} & \textbf{Type} & \textbf{Trans.} & \textbf{Items} & \textbf{Avg. Width} \\ \hline
+        c20d10k          & Synthetic     & 10,000          & 192            & 20                  \\ \hline
+        chess            & Real-life     & 3,196           & 75             & 37                  \\ \hline
+        mushroom         & Real-life     & 8,124           & 119            & 23                  \\ \hline
+        BMS\_WebView\_1  & Real-life     & 59,602          & 497            & 2.5                 \\ \hline
+        BMS\_WebView\_2  & Real-life     & 77,512          & 3,340          & 5                   \\ \hline
+        T10I4D100K       & Synthetic     & 100,000         & 870            & 10                  \\ \hline
+        T40I10D100K      & Synthetic     & 100,000         & 1,000          & 40                  \\ \hline
+    \end{tabular}
+    \vfill
+    \begin{alertblock}{Dataset Diversity}
+        \scriptsize The selection spans from sparse transaction logs to dense datasets, allowing for a robust evaluation of the HTT architecture across different data characteristics.
+    \end{alertblock}
+\end{frame}
+
+% --- Slide 4: Performance I (2x2 Plot) ---
 \begin{frame}{Performance Analysis: Datasets (a) to (d)}
     \vspace{-0.2cm}
     \begin{center}
@@ -96,7 +119,7 @@
     \end{itemize}
 \end{frame}
 
-% --- Slide 4: Performance II (Triangular Plot - BMS) ---
+% --- Slide 5: Performance II (Triangular Plot) ---
 \begin{frame}{Performance Analysis: Datasets (e) to (g)}
     \vspace{-0.2cm}
     \begin{center}
@@ -104,23 +127,26 @@
     \end{center}
     \vspace{-0.3cm}
     \begin{itemize}
-        \item \footnotesize \textbf{Observation:} For sparse datasets (BMS1/BMS2), the efficiency of the Trie-based architecture becomes even more apparent, achieving an \textbf{8x performance gain}.
+        \item \footnotesize \textbf{Observation:} For sparse datasets (BMS/T10), the Trie-based architecture achieves a significant \textbf{8x performance gain}.
     \end{itemize}
 \end{frame}
 
-% --- Slide 5: Summary Table ---
+% --- Slide 6: Summary Table ---
 \begin{frame}{Experimental Results: Summary Table}
     \centering
     \begin{beamercolorbox}[sep=6pt,center,rounded=true]{block body}
-        \textbf{Relative Speedup vs. Hash Tree (HT)}
+        \textbf{Relative Speedup vs. Hash Tree (HT) Baseline}
     \end{beamercolorbox}
     \vspace{0.1cm}
+    \small
     \begin{tabular}{|l|c|c|c|}
         \hline
         \textbf{Dataset} & \textbf{HT (Baseline)} & \textbf{Trie} & \textbf{HTT} \\ \hline
-        BMS1 / BMS2      & 1.0x                & \textbf{> 8.0x} & \textbf{> 8.0x} \\ \hline
+        BMS\_WebView\_1/2 & 1.0x                & \textbf{> 8.0x} & \textbf{> 8.4x} \\ \hline
+        T10I4D100K       & 1.0x                & 5.9x            & \textbf{6.2x}   \\ \hline
         T40I10D100K      & 1.0x                & 5.8x            & \textbf{6.1x}   \\ \hline
         Mushroom / Chess & 1.0x                & 1.9x            & \textbf{2.1x}   \\ \hline
+        c20d10k          & 1.0x                & 1.7x            & \textbf{1.8x}   \\ \hline
     \end{tabular}
     \vfill
     \begin{alertblock}{The RDD Conclusion}
