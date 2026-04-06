@@ -1,45 +1,121 @@
 % sections/07_results.tex
 
 \section{Experimental Results}
-\begin{frame}{Experimental Results: Benchmark Setup}
-    \begin{itemize}
-        \item \textbf{Cluster Environment:} 
+
+\begin{frame}{Experimental Results: Hardware Specifications}
+  \begin{columns}[onlytextwidth, T]
+    \column{0.6\textwidth}
+      \begin{itemize}
+        \item \textbf{PC Build (Workstation):} 
         \begin{itemize}
-            \item Apache Spark 2.x cluster.
-            \item RDDs persisted in-memory (Storage Level: MEMORY\_ONLY).
+          \item \textbf{CPU:} Intel Xenon CPU E5-2620@2.10 GHz with 24 cores \textit{(Inferred Dual-Processor setup)}.
+          \item \textbf{RAM:} 16 GB DDR3 \textit{(Inferred Quad-Channel configuration)}.
+          \item \textbf{Storage:} 1 TB of disk storage \textit{(Inferred HDD for HDFS layer)}.
+        \end{itemize}
+      \end{itemize}
+
+    \column{0.4\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.75]
+        % 2 physical CPUs
+        \draw[thick, fill=gray!10] (0,1.2) rectangle (1.1,2.3);
+        \draw[thick, fill=gray!10] (1.4,1.2) rectangle (2.5,2.3);
+        \node at (1.25,2.6) {\tiny 2x Physical CPUs};
+
+        % 4 RAM Sticks
+        \foreach \x in {0, 0.35, 0.7, 1.05} {
+          \draw[thick, fill=green!15] (3.0+\x, 0.5) rectangle (3.0+\x+0.2, 3);
+          \foreach \y in {0.7, 1.2, 1.7, 2.2, 2.7}
+            \draw[fill=black!80] (3.0+\x+0.05, \y) rectangle (3.0+\x+0.15, \y+0.2);
+        }
+        \node[below, scale=0.7] at (3.6,0.5) {16 GB RAM};
+        
+        % HDD Cylinder Icon - Centered at x=1.25
+        \begin{scope}[yshift=-1.2cm, xshift=1.25cm]
+            \draw[thick, fill=gray!20] (0,0.3) ellipse (0.5 and 0.15);
+            \draw[thick] (-0.5,0) -- (-0.5,0.3);
+            \draw[thick] (0.5,0) -- (0.5,0.3);
+            \draw[thick, fill=gray!20] (-0.5,0) arc (180:360:0.5 and 0.15) -- (0.5,0) -- cycle;
+            \node[below, scale=0.7] at (0,-0.1) {1 TB HDD};
+        \end{scope}
+        
+        % Connections
+        % Blue connection line at y=0.8
+        \draw[thick, blue!50] (1.25,1.2) -- (1.25,0.8) -- (3.6,0.8);
+        
+        % Shorter Centered Arrow from HDD (stops at y=0.7 to avoid collision)
+        \draw[thick, gray!50, ->] (1.25,-0.7) -- (1.25,0.7);
+      \end{tikzpicture}
+  \end{columns}
+
+  \vfill
+  \begin{alertblock}{Hardware Capacity}
+    The dual-processor setup provides 24 execution threads, while the quad-channel memory configuration ensures high data transfer speeds between the RAM and the CPUs.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Experimental Results: Software \& Memory Mode}
+  \begin{columns}[onlytextwidth, T]
+    \column{0.6\textwidth}
+      \begin{itemize}
+        \item \textbf{Software Stack:} 
+        \begin{itemize}
+          \item \textbf{OS:} Ubuntu 14.04 (64-bit).
+          \item \textbf{Frameworks:} Spark 2.1.1, Hadoop 2.6.0.
+          \item \textbf{Language:} Java 7 / Scala 2.11.8.
         \end{itemize}
         \vfill
-        \item \textbf{Datasets:} 
+        \item \textbf{Memory Mode:} 
         \begin{itemize}
-            \item \textbf{Retail:} Sparse, long transactions.
-            \item \textbf{T10I4D100K:} Standard synthetic benchmark for Apriori.
-            \item \textbf{Mushroom/Chess:} Dense datasets with high candidate overlap.
+          \item \textbf{Level:} \texttt{MEMORY\_ONLY}.
+          \item \textbf{Strategy:} RDDs are cached in RAM.
+          \item \textbf{Impact:} Bypasses Disk I/O bottlenecks during $L_k$ generation.
         \end{itemize}
-        \vfill
-        \item \textbf{Metric:} Execution time (seconds) per iteration ($L_k$ generation).
-    \end{itemize}
+      \end{itemize}
+
+    \column{0.4\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.8]
+        \node[draw, fill=gray!10] (hdfs) at (1.5,4) {\scriptsize HDFS (Input)};
+        \draw[thick, fill=blue!5] (0,1.5) rectangle (3,3);
+        \node at (1.5,2.25) {\scriptsize \textbf{Spark RAM}};
+        \node[blue] at (1.5,1.8) {\tiny (MEMORY\_ONLY)};
+        \draw[thick, fill=red!5] (0,0) rectangle (3,-1);
+        \node at (1.5,-0.5) {\scriptsize Local Disk};
+        \draw[red, thick] (0,0) -- (3,-1); \draw[red, thick] (3,0) -- (0,-1);
+        \draw[->, thick] (hdfs) -- (1.5,3);
+        \draw[->, blue, ultra thick] (1.5,3) to [bend left] (1.5,3.8) node[right] {\tiny Iteration Loop};
+      \end{tikzpicture}
+  \end{columns}
 \end{frame}
 
 \begin{frame}{Experimental Results: Performance Analysis}
-    \begin{itemize}
-        \item \textbf{Observation 1: Hash Tree Bottleneck}
+    \begin{columns}[onlytextwidth, T]
+        \column{0.5\textwidth}
         \begin{itemize}
-            \item Consistently slower due to hash collisions and leaf-node linear searches.
-            \item Performance degrades sharply as \textit{minsup} decreases (more candidates).
+            \item \textbf{Observation 1: Hash Tree (HT) Bottleneck}
+            \begin{itemize}
+                \item High collision rates and linear search hinder performance.
+            \end{itemize}
+            \item \textbf{Observation 2: Trie \& HTT Efficiency}
+            \begin{itemize}
+                \item Significant \textbf{8x speedup} observed on BMS datasets.
+            \end{itemize}
+            \item \textbf{Observation 3: Spark Advantage}
+            \begin{itemize}
+                \item Hash Table Trie (HTT) architecture minimizes "cache penalties."
+            \end{itemize}
         \end{itemize}
-        \vfill
-        \item \textbf{Observation 2: Trie Efficiency}
-        \begin{itemize}
-            \item Significant speedup over Hash Trees due to prefix pruning.
-            \item CPU usage is lower, but still limited by sibling-node traversal in dense layers.
-        \end{itemize}
-        \vfill
-        \item \textbf{Observation 3: Hash Table Trie (HTT) Dominance}
-        \begin{itemize}
-            \item \textbf{Peak Performance:} HTT shows the lowest execution time across all datasets.
-            \item \textbf{Scalability:} As candidate counts reach millions, HTT maintains $O(1)$ child lookup, outperforming the standard Trie by 15--20\%.
-        \end{itemize}
-    \end{itemize}
+
+        \column{0.5\textwidth}
+        \centering
+        \vspace{0.5cm}
+        \begin{beamercolorbox}[sep=10pt,center,rounded=true]{block body}
+            \textit{Placeholder for Fig 4:}\\
+            \textit{Execution Time Plots}\\
+            \textit{(a) through (g)}
+        \end{beamercolorbox}
+    \end{columns}
 \end{frame}
 
 \begin{frame}{Experimental Results: Summary Table}
@@ -50,13 +126,13 @@
     \vspace{0.2cm}
     \begin{tabular}{|l|c|c|c|}
         \hline
-        \textbf{Dataset} & \textbf{Hash Tree} & \textbf{Trie} & \textbf{HT Trie} \\ \hline
-        Retail           & 1.0x (Baseline)    & 1.4x          & \textbf{1.8x}    \\ \hline
-        T10I4D100K       & 1.0x (Baseline)    & 2.1x          & \textbf{2.5x}    \\ \hline
-        Mushroom         & 1.0x (Baseline)    & 1.9x          & \textbf{2.3x}    \\ \hline
+        \textbf{Dataset} & \textbf{HT (Baseline)} & \textbf{Trie} & \textbf{HTT} \\ \hline
+        BMS1 / BMS2      & 1.0x                & \textbf{> 8.0x} & \textbf{> 8.0x} \\ \hline
+        T40I10D100K      & 1.0x                & 5.8x            & \textbf{6.1x}   \\ \hline
+        Mushroom / Chess & 1.0x                & 1.9x            & \textbf{2.1x}   \\ \hline
     \end{tabular}
     \vfill
     \begin{alertblock}{The RDD Conclusion}
-        The results validate that within Spark, the computational efficiency of $O(1)$ lookups in the Hash Table Trie justifies its higher memory footprint.
+        The results validate that within Spark, the computational efficiency of $O(1)$ lookups in the Hash Table Trie (HTT) justifies its memory footprint.
     \end{alertblock}
 \end{frame}
