@@ -122,7 +122,7 @@
         x=1.1cm, y=1.1cm
     ]
     
-    % Nodes 0-5
+    % Nodes (Coordinates Manually Adjusted)
     \node[freq] (null) at (4.5, 1) {$\emptyset$};
     \node[freq] (a) at (0.5,0) {a}; \node[freq] (b) at (2.5,0) {b}; \node[freq] (c) at (4.5,0) {c}; \node[freq] (d) at (6.5,0) {d}; \node[freq] (e) at (8.5,0) {e};
     \node[infr] (ab) at (0,-1.2) {ab}; \node[freq] (ac) at (1,-1.2) {ac}; \node[freq] (ad) at (2,-1.2) {ad}; 
@@ -134,7 +134,7 @@
     \node[infr] (abcd) at (1.5,-3.6) {abcd}; \node[infr] (abce) at (3,-3.6) {abce}; \node[infr] (abde) at (4.5,-3.6) {abde}; \node[infr] (acde) at (6,-3.6) {acde}; \node[infr] (bcde) at (7.5,-3.6) {bcde};
     \node[infr] (abcde) at (4.5,-4.8) {abcde};
 
-    % Edges
+    % Full Edge Mapping
     \foreach \p/\c in {null/a, null/b, null/c, null/d, null/e, a/ab, a/ac, a/ad, a/ae, b/ab, b/bc, b/bd, b/be, c/ac, c/bc, c/cd, c/ce, d/ad, d/bd, d/cd, d/de, e/ae, e/be, e/ce, e/de, ab/abc, ab/abd, ab/abe, ac/abc, ac/acd, ac/ace, ad/abd, ad/acd, ad/ade, ae/abe, ae/ace, ae/ade, bc/abc, bc/bcd, bc/bce, bd/abd, bd/bcd, bd/bde, be/abe, be/bce, be/bde, cd/acd, cd/bcd, cd/cde, ce/ace, ce/bce, ce/cde, de/ade, de/bde, de/cde, abc/abcd, abc/abce, abd/abcd, abd/abde, abe/abce, abe/abde, acd/abcd, acd/acde, ace/abce, ace/acde, ade/abde, ade/acde, bcd/abcd, bcd/bcde, bce/abce, bce/bcde, bde/abde, bde/bcde, cde/acde, cde/bcde, abcd/abcde, abce/abcde, abde/abcde, acde/abcde, bcde/abcde} \draw[gray!20] (\p) -- (\c);
 
     % --- YOUR MANUAL REFINED CONTINUOUS PATH ---
@@ -200,21 +200,22 @@
     \textbf{The Problem: Searching a Giant Haystack}
     \begin{itemize}
         \item Even with pruning, we might have \textbf{millions} of candidate itemsets.
-        \item For every single transaction, we must check which candidates are present.
+        \item Every transaction requires a frequency check: \textit{"Is this candidate in here?"}
     \end{itemize}
 
     \vfill
 
     \begin{alertblock}{The "Librarian" Analogy}
-        Imagine looking for a specific book in a massive library:
+        Imagine looking for a specific book in a massive, poorly indexed library:
+        \vspace{0.2cm}
         \begin{itemize}
-            \item \textbf{Standard Search:} Like walking down 10 different hallways just to find out a book isn't there.
-            \item \textbf{The Efficiency Gap:} We spend 90\% of our time "walking" (moving through memory) and only 10\% actually "reading" (counting frequency).
+            \item \textbf{The Task:} Finding 5 books out of 1,000,000 possibilities.
+            \item \textbf{The Waste:} Walking down 50 hallways just to find an empty shelf.
+            \item \textbf{The Reality:} We spend \textbf{90\%} of the time "walking" (memory access) and only \textbf{10\%} "reading" (actual counting).
         \end{itemize}
     \end{alertblock}
     
     \vfill
     \centering
-    \textbf{Goal:} We need a way to "teleport" directly to the right shelf. \\
-    \textit{This brings us to Section 04: Data Structures.}
+    \textbf{Goal:} We need a way to "teleport" directly to the right shelf.
 \end{frame}
