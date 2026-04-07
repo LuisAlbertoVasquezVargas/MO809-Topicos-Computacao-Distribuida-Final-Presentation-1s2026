@@ -122,7 +122,7 @@
         x=1.1cm, y=1.1cm
     ]
     
-    % Level 0-5 Nodes
+    % Nodes 0-5
     \node[freq] (null) at (4.5, 1) {$\emptyset$};
     \node[freq] (a) at (0.5,0) {a}; \node[freq] (b) at (2.5,0) {b}; \node[freq] (c) at (4.5,0) {c}; \node[freq] (d) at (6.5,0) {d}; \node[freq] (e) at (8.5,0) {e};
     \node[infr] (ab) at (0,-1.2) {ab}; \node[freq] (ac) at (1,-1.2) {ac}; \node[freq] (ad) at (2,-1.2) {ad}; 
@@ -134,7 +134,7 @@
     \node[infr] (abcd) at (1.5,-3.6) {abcd}; \node[infr] (abce) at (3,-3.6) {abce}; \node[infr] (abde) at (4.5,-3.6) {abde}; \node[infr] (acde) at (6,-3.6) {acde}; \node[infr] (bcde) at (7.5,-3.6) {bcde};
     \node[infr] (abcde) at (4.5,-4.8) {abcde};
 
-    % Full Edge Mapping
+    % Edges
     \foreach \p/\c in {null/a, null/b, null/c, null/d, null/e, a/ab, a/ac, a/ad, a/ae, b/ab, b/bc, b/bd, b/be, c/ac, c/bc, c/cd, c/ce, d/ad, d/bd, d/cd, d/de, e/ae, e/be, e/ce, e/de, ab/abc, ab/abd, ab/abe, ac/abc, ac/acd, ac/ace, ad/abd, ad/acd, ad/ade, ae/abe, ae/ace, ae/ade, bc/abc, bc/bcd, bc/bce, bd/abd, bd/bcd, bd/bde, be/abe, be/bce, be/bde, cd/acd, cd/bcd, cd/cde, ce/ace, ce/bce, ce/cde, de/ade, de/bde, de/cde, abc/abcd, abc/abce, abd/abcd, abd/abde, abe/abce, abe/abde, acd/abcd, acd/acde, ace/abce, ace/acde, ade/abde, ade/acde, bcd/abcd, bcd/bcde, bce/abce, bce/bcde, bde/abde, bde/bcde, cde/acde, cde/bcde, abcd/abcde, abce/abcde, abde/abcde, acde/abcde, bcde/abcde} \draw[gray!20] (\p) -- (\c);
 
     % --- YOUR MANUAL REFINED CONTINUOUS PATH ---
@@ -160,24 +160,61 @@
     \end{tikzpicture}
 \end{frame}
 
-% --- Slide 6: The Bottleneck ---
-\begin{frame}{The Computational Bottleneck}
+% --- Slide 6: The Apriori Algorithm (The Strategy) ---
+\begin{frame}{The Apriori Algorithm}
+    Apriori is a \textbf{level-wise} search algorithm. It uses a "generate-and-test" strategy:
+    
+    \begin{enumerate}
+        \item \textbf{K=1:} Find all frequent items (e.g., $\{a\}, \{b\}$).
+        \item \textbf{Join Step:} Generate candidates of size $k+1$ from frequent $k$-itemsets.
+        \item \textbf{Prune Step:} Use the \textbf{Antimonotonicity Rule} to delete invalid candidates.
+        \item \textbf{Count Step:} Scan the database to calculate actual support.
+    \end{enumerate}
+
+    \vfill
+    \begin{center}
+        \textit{Repeat until no more candidates can be generated.}
+    \end{center}
+\end{frame}
+
+% --- Slide 7: The Join Step (Candidate Generation) ---
+\begin{frame}{The Join Step: $L_k \to C_{k+1}$}
+    \begin{alertblock}{The Prefix-Join Rule}
+        Join frequent itemsets $p, q \in L_k$ \textbf{only if} they share the same prefix of length $k-1$:
+        \[ p = \{i_1, \dots, i_{k-1}, i_k\} \quad q = \{i_1, \dots, i_{k-1}, i_{k'}\} \]
+        \[ \text{Candidate } c = \{i_1, \dots, i_{k-1}, i_k, i_{k'}\} \]
+    \end{alertblock}
+
+    \vfill
+
+    \textbf{Why this works:}
     \begin{itemize}
-        \item \textbf{Candidate Explosion:} Even with pruning, $C_k$ can reach millions in massive datasets.
-        \item \textbf{Frequency Counting:} The most expensive step. Identifying which candidates are present in each transaction.
+        \item It generates the \textit{minimum} necessary candidates.
+        \item Example: If $\{a, c\}$ and $\{a, d\}$ are frequent, $\{a, c, d\}$ is a potential candidate.
+        \item If $\{a, c\}$ is frequent but $\{c, d\}$ is \textbf{not}, the join logic naturally skips $\{a, c, d\}$.
+    \end{itemize}
+\end{frame}
+
+% --- Slide 8: The Computational Bottleneck ---
+\begin{frame}{Why is this slow in practice?}
+    \textbf{The Problem: Searching a Giant Haystack}
+    \begin{itemize}
+        \item Even with pruning, we might have \textbf{millions} of candidate itemsets.
+        \item For every single transaction, we must check which candidates are present.
     \end{itemize}
 
     \vfill
 
-    \begin{alertblock}{Limitations of Standard Structures}
-        \begin{enumerate}
-            \item \textbf{Memory Locality:} Excessive pointer hopping.
-            \item \textbf{Traversal Overhead:} Deep, empty branches in sparse data.
-            \item \textbf{Latency:} $O(\log n)$ lookup vs the required $O(1)$.
-        \end{enumerate}
+    \begin{alertblock}{The "Librarian" Analogy}
+        Imagine looking for a specific book in a massive library:
+        \begin{itemize}
+            \item \textbf{Standard Search:} Like walking down 10 different hallways just to find out a book isn't there.
+            \item \textbf{The Efficiency Gap:} We spend 90\% of our time "walking" (moving through memory) and only 10\% actually "reading" (counting frequency).
+        \end{itemize}
     \end{alertblock}
     
     \vfill
     \centering
-    \textit{This motivates the need for the \textbf{Hash Table Trie (HTT)}.}
+    \textbf{Goal:} We need a way to "teleport" directly to the right shelf. \\
+    \textit{This brings us to Section 04: Data Structures.}
 \end{frame}
