@@ -1,44 +1,135 @@
-% sections/05_literature.tex
-
 \section{Literature Overview}
-\begin{frame}{Literature Overview: FIM Evolution}
+
+% --- Slide 1: The FIM Landscape (The Rollback Version) ---
+\begin{frame}[t]{The Evolution of FIM Environments}
+    \vspace{0.2cm}
+    Before addressing the HTT, we must categorize how FIM has adapted to shifting hardware constraints:
+    
+    \vspace{0.4cm}
+    \renewcommand{\arraystretch}{1.3}
+    \centering
+    \begin{tabularx}{\textwidth}{l l l >{\raggedright\arraybackslash}X}
+        \rowcolor{SecondaryColor!20}
+        \textbf{Era} & \textbf{Algorithm} & \textbf{Storage} & \textbf{Main Bottleneck} \\ \hline
+        Classic & Apriori & Local RAM & Memory Capacity \\
+        Distributed & PFP (Hadoop) & HDFS (Disk) & \textbf{Network \& Disk I/O} \\
+        \textbf{Modern} & \textbf{Spark} & \textbf{RDD (RAM)} & \textbf{CPU (Search)} \\ \hline
+    \end{tabularx}
+
+    \vspace{0.6cm}
     \begin{itemize}
-        \item \textbf{The Classic Era (Sequential):}
-        \begin{itemize}
-            \item \textbf{Apriori (1994):} The foundation. Used Hash Trees to store candidates.
-            \item \textbf{FP-Growth (2000):} Eliminated candidate generation using a prefix-tree (FP-Tree), but is notoriously difficult to parallelize efficiently.
-        \end{itemize}
-        \vfill
-        \item \textbf{The Distributed Era (Disk-based):}
-        \begin{itemize}
-            \item \textbf{PFP (2008):} Parallel FP-Growth on MapReduce. Heavy Disk I/O overhead due to the nature of Hadoop.
-        \end{itemize}
-        \vfill
-        \item \textbf{The Modern Era (In-Memory):}
-        \begin{itemize}
-            \item \textbf{Spark-based Apriori:} Focuses on RDD persistence to avoid re-reading data. 
-            \item \textbf{The Gap:} Most Spark implementations still rely on standard Hash Trees or simple Arrays, failing to optimize the CPU-to-Memory bottleneck.
-        \end{itemize}
+        \item \textbf{The Shift:} Spark's RDD persistence effectively "solved" the I/O problem.
+        \item \textbf{The New Reality:} When data is already in RAM, the time spent traversing pointer-heavy structures becomes the dominant cost.
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Literature Overview: Data Structure Benchmarks}
+% --- Slide 2: The Migration from MapReduce to Spark ---
+\begin{frame}[t]{Architectural Migration: Hadoop to Spark}
     \begin{itemize}
-        \item \textbf{Hash Tree (HT):}
+        \item \textbf{Hadoop Era (PFP, PARMA, FPC/DPC):}
         \begin{itemize}
-            \item Standard for decades.
-            \item \textit{Issue:} High branch misprediction and poor cache locality in modern CPUs.
+            \item \small MapReduce algorithms faced high latency due to launching new jobs for every iteration.
+            \item \small \textbf{Costly I/O:} Constant disk read/write operations for intermediate results.
         \end{itemize}
-        \vfill
-        \item \textbf{Trie (Prefix-Tree):}
+        \item \textbf{The Spark Era (YAFIM, R-Apriori):}
         \begin{itemize}
-            \item Fast traversal, no hashing overhead at each node.
-            \item \textit{Issue:} Can become very deep and sparse, consuming significant memory.
+            \item \small \textbf{YAFIM:} The pioneer Spark-based Apriori. It eliminated disk I/O, proving that in-memory RDD computation is 25x faster.
         \end{itemize}
-        \vfill
-        \item \textbf{The Research Question:}
-        \begin{quote}
-            Can a hybrid approach—the \textbf{Hash Table Trie}—outperform both in a distributed RDD environment where memory is abundant but CPU cycles are precious?
-        \end{quote}
     \end{itemize}
+
+    \begin{center}
+        \begin{tikzpicture}[scale=0.85]
+            % X-Axis
+            \draw[thick, ->] (0,0) -- (6,0) node[right, font=\tiny] {Time};
+            % Hadoop Bar
+            \draw[fill=red!20, draw=red] (0.5,0.2) rectangle (5.5,0.6) node[pos=.5, font=\tiny] {Hadoop Latency};
+            % Spark Bar
+            \draw[fill=green!20, draw=green!60!black] (0.5,-0.6) rectangle (1.2,-0.2) node[pos=.5, font=\tiny] {Spark};
+            % Speedup Annotation
+            \draw[<->, thick, SecondaryColor] (1.3,-0.4) -- (5.5,-0.4);
+            \node[font=\scriptsize, SecondaryColor, below] at (3.4,-0.4) {$\approx 25\times$ Faster};
+        \end{tikzpicture}
+    \end{center}
+
+    \begin{alertblock}{Transition Summary}
+        \footnotesize Shift from \textbf{Disk Latency} to \textbf{In-Memory Search Speed}.
+    \end{alertblock}
+\end{frame}
+
+% --- Slide 3: Pruning Strategy: Bloom Filters ---
+\begin{frame}[t]{Probabilistic Pruning (R-Apriori)}
+    \begin{itemize}
+        \item \textbf{The Feature:} A space-efficient bit array used to test if an element is a member of a set.
+        \item \textbf{The Logic:}
+        \begin{itemize}
+            \item \small \textbf{Fast Rejection:} If the filter says "No," the itemset is definitely not frequent $\to$ \textbf{Discard instantly}.
+            \item \small \textbf{Verification:} Only "Maybe" results proceed to the actual counting phase.
+        \end{itemize}
+    \end{itemize}
+
+    \begin{center}
+        \begin{tikzpicture}[scale=0.8]
+            \draw[thick] (0,0) rectangle (4,0.3);
+            \foreach \x in {0.5,1.2,2.8,3.5} \fill[AlertColor] (\x-0.1,0.05) rectangle (\x+0.1,0.25);
+            \draw[->, thick, red] (1.2,-0.5) -- (1.2,-0.1) node[midway, left, font=\tiny] {Check};
+            \node[font=\tiny, right] at (1.4,-0.4) {Result: False? $\to$ Pruned};
+        \end{tikzpicture}
+    \end{center}
+    
+    \begin{alertblock}{Design Focus}
+        \footnotesize R-Apriori focuses on reducing the total \textbf{candidate count} before the local search begins.
+    \end{alertblock}
+\end{frame}
+
+% --- Slide 4: Specialized Data Structure Innovations ---
+\begin{frame}[t]{Data Structures in Related Work}
+    Beyond global pruning, researchers explored local memory-mapping:
+    
+    \begin{itemize}
+        \item \small \textbf{Boolean Vectors (DFIMA):} Uses bitwise matrix pruning to handle candidates efficiently within Spark.
+        \item \small \textbf{Array Vectors (Yang et al.):} Maps the database into contiguous memory for fast parallel iteration.
+        \item \small \textbf{Ultrametric Trees (FiDoop):} Uses the \textit{FIU-Tree} to provide a more compressed representation.
+    \end{itemize}
+
+    \vspace{0.1cm}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{alertblock}{Pointer-Based (Legacy)}
+                \scriptsize \centering
+                \begin{tikzpicture}[scale=0.6]
+                    \node[circle,draw,inner sep=1pt] (a) at (0,0) {};
+                    \node[circle,draw,inner sep=1pt] (b) at (-0.8,-0.8) {};
+                    \node[circle,draw,inner sep=1pt] (c) at (0.8,-0.8) {};
+                    \draw[->,red,thick] (a) -- (b); \draw[->,red,thick] (a) -- (c);
+                    \node[red, font=\tiny] at (0.8,-0.2) {Stall!};
+                \end{tikzpicture}\\
+                Memory Fragmentation
+            \end{alertblock}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{alertblock}{Direct Access (Proposed)}
+                \scriptsize \centering
+                \begin{tikzpicture}[scale=0.6]
+                    \draw (0,-0.4) grid (2,0.1);
+                    \draw[->,blue,thick] (0.5,0.6) -- (0.5,0.1);
+                    \node[blue, font=\tiny] at (1.2,0.5) {$O(1)$ Jump};
+                \end{tikzpicture}\\
+                Cache-Friendly
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- Slide 5: The Core Research Question ---
+\begin{frame}[t]{The Core Research Question}
+    \begin{itemize}
+        \item \textbf{The Observation:} Most Spark-based FIM optimizations focus on \textit{global} pruning (like Bloom Filters) or partitioning.
+        \item \textbf{The Missing Piece:} Local search efficiency within an RDD partition is still hindered by legacy pointer-heavy tree navigations.
+    \end{itemize}
+
+    \vspace{0.8cm}
+    \begin{alertblock}{The Core Question}
+        \centering
+        \textit{"Can the Hash Table Trie (HTT) achieve $O(1)$ search jumps to significantly outperform traditional trees in a RAM-heavy RDD environment?"}
+    \end{alertblock}
 \end{frame}
