@@ -84,23 +84,26 @@
         node_style/.style={draw, rectangle, minimum height=0.3cm, minimum width=0.6cm, font=\tiny\ttfamily},
         freq/.style={fill=blue!20, node_style}, 
         infr/.style={fill=white, node_style},   
-        x=1.1cm, y=1.2cm
+        x=1.1cm, y=1.1cm
     ]
     
     % Level 0 & 1
     \node[freq] (null) at (4.5, 1) {$\emptyset$};
     \node[freq] (a) at (0.5,0) {a}; \node[freq] (b) at (2.5,0) {b}; \node[freq] (c) at (4.5,0) {c}; \node[freq] (d) at (6.5,0) {d}; \node[freq] (e) at (8.5,0) {e};
     \foreach \x in {a,b,c,d,e} \draw (null) -- (\x);
+
     % Level 2
     \node[infr] (ab) at (0,-1.2) {ab}; \node[freq] (ac) at (1,-1.2) {ac}; \node[freq] (ad) at (2,-1.2) {ad}; 
     \node[freq] (ae) at (3,-1.2) {ae}; \node[freq] (bc) at (4,-1.2) {bc}; \node[infr] (bd) at (5,-1.2) {bd};
     \node[infr] (be) at (6,-1.2) {be}; \node[freq] (cd) at (7,-1.2) {cd}; \node[freq] (ce) at (8,-1.2) {ce}; \node[freq] (de) at (9,-1.2) {de};
     \foreach \p/\c in {a/ab, a/ac, a/ad, a/ae, b/ab, b/bc, b/bd, b/be, c/ac, c/bc, c/cd, c/ce, d/ad, d/bd, d/cd, d/de, e/ae, e/be, e/ce, e/de} \draw (\p) -- (\c);
+
     % Level 3
     \node[infr] (abc) at (0.5,-2.4) {abc}; \node[infr] (abd) at (1.5,-2.4) {abd}; \node[infr] (abe) at (2.5,-2.4) {abe};
     \node[freq] (acd) at (3.5,-2.4) {acd}; \node[freq] (ace) at (4.5,-2.4) {ace}; \node[freq] (ade) at (5.5,-2.4) {ade};
     \node[infr] (bcd) at (6.5,-2.4) {bcd}; \node[infr] (bce) at (7.5,-2.4) {bce}; \node[infr] (bde) at (8.5,-2.4) {bde}; \node[infr] (cde) at (9.5,-2.4) {cde};
     \foreach \p/\c in {ab/abc, ab/abd, ab/abe, ac/abc, ac/acd, ac/ace, ad/abd, ad/acd, ad/ade, ae/abe, ae/ace, ae/ade, bc/abc, bc/bcd, bc/bce, bd/abd, bd/bcd, bd/bde, be/abe, be/bce, be/bde, cd/acd, cd/bcd, cd/cde, ce/ace, ce/bce, ce/cde, de/ade, de/bde, de/cde} \draw (\p) -- (\c);
+
     % Level 4 & 5
     \node[infr] (abcd) at (1.5,-3.6) {abcd}; \node[infr] (abce) at (3,-3.6) {abce}; \node[infr] (abde) at (4.5,-3.6) {abde}; \node[infr] (acde) at (6,-3.6) {acde}; \node[infr] (bcde) at (7.5,-3.6) {bcde};
     \node[infr] (abcde) at (4.5,-4.8) {abcde};
@@ -109,17 +112,17 @@
     \end{tikzpicture}
 \end{frame}
 
-% --- Slide 5: PRECISE CURVILINEAR FRONTIER ---
+% --- Slide 5: CONTINUOUS FREQUENT BORDER ---
 \begin{frame}{The Frequent Border (Spatial Boundary)}
     \centering
     \begin{tikzpicture}[
         node_style/.style={draw, rectangle, minimum height=0.3cm, minimum width=0.6cm, font=\tiny\ttfamily},
         freq/.style={fill=blue!20, node_style}, 
         infr/.style={fill=white, node_style},   
-        x=1.1cm, y=1.2cm
+        x=1.1cm, y=1.1cm
     ]
     
-    % Level 0, 1, 2, 3, 4, 5 Nodes (Positions locked)
+    % Level 0-5 Nodes
     \node[freq] (null) at (4.5, 1) {$\emptyset$};
     \node[freq] (a) at (0.5,0) {a}; \node[freq] (b) at (2.5,0) {b}; \node[freq] (c) at (4.5,0) {c}; \node[freq] (d) at (6.5,0) {d}; \node[freq] (e) at (8.5,0) {e};
     \node[infr] (ab) at (0,-1.2) {ab}; \node[freq] (ac) at (1,-1.2) {ac}; \node[freq] (ad) at (2,-1.2) {ad}; 
@@ -131,20 +134,28 @@
     \node[infr] (abcd) at (1.5,-3.6) {abcd}; \node[infr] (abce) at (3,-3.6) {abce}; \node[infr] (abde) at (4.5,-3.6) {abde}; \node[infr] (acde) at (6,-3.6) {acde}; \node[infr] (bcde) at (7.5,-3.6) {bcde};
     \node[infr] (abcde) at (4.5,-4.8) {abcde};
 
-    % Edges (Implicit background)
-    \foreach \p/\c in {null/a, null/b, null/c, null/d, null/e, a/ab, a/ac, a/ad, a/ae, b/ab, b/bc, b/bd, b/be, c/ac, c/bc, c/cd, c/ce, d/ad, d/bd, d/cd, d/de, e/ae, e/be, e/ce, e/de, ab/abc, ac/acd, ac/ace, ad/acd, ad/ade, ae/ace, ae/ade, bc/bcd, cd/acd, cd/bcd, cd/cde, ce/ace, ce/cde, de/ade, de/cde} \draw[gray!20] (\p) -- (\c);
+    % Full Edge Mapping
+    \foreach \p/\c in {null/a, null/b, null/c, null/d, null/e, a/ab, a/ac, a/ad, a/ae, b/ab, b/bc, b/bd, b/be, c/ac, c/bc, c/cd, c/ce, d/ad, d/bd, d/cd, d/de, e/ae, e/be, e/ce, e/de, ab/abc, ab/abd, ab/abe, ac/abc, ac/acd, ac/ace, ad/abd, ad/acd, ad/ade, ae/abe, ae/ace, ae/ade, bc/abc, bc/bcd, bc/bce, bd/abd, bd/bcd, bd/bde, be/abe, be/bce, be/bde, cd/acd, cd/bcd, cd/cde, ce/ace, ce/bce, ce/cde, de/ade, de/bde, de/cde, abc/abcd, abc/abce, abd/abcd, abd/abde, abe/abce, abe/abde, acd/abcd, acd/acde, ace/abce, ace/acde, ade/abde, ade/acde, bcd/abcd, bcd/bcde, bce/abce, bce/bcde, bde/abde, bde/bcde, cde/acde, cde/bcde, abcd/abcde, abce/abcde, abde/abcde, acde/abcde, bcde/abcde} \draw[gray!20] (\p) -- (\c);
 
-    % PRECISE FRONTIER CURVE
-    % It must go BELOW ac, ad, ae, bc, cd, ce, de
-    % It must go BELOW acd, ace, ade
-    % It must go ABOVE ab, bd, be, abc, bcd, etc.
+    % --- YOUR MANUAL REFINED CONTINUOUS PATH ---
     \draw[red, ultra thick, dashed] 
-        (-0.5, -0.6) % Start left of 'a' level
-        .. controls (0, -0.7) and (0.3, -1.8) .. (0.7, -1.8) % Dip under 'ab' but stay above 'abc'
-        .. controls (1.5, -1.8) and (2.5, -2.8) .. (4.5, -3) % Dip deep to include acd, ace, ade
-        .. controls (6, -2.8) and (7, -1.8) .. (10, -1.8); % Wrap back up toward 'de'
+        (-0.8, -0.6) -- 
+        (0.2, -0.6) --                   
+        (0.8, -1.8) --                   
+        (1.8, -1.8) --                  
+        (2.8, -1.8) --                    
+        (3.4, -3.1) --                   
+        (4.4, -3.1) --                   
+        (6.0, -3.1) --                   
+        (6.0, -1.9) --                   
+        (4.5, -1.9) --                   
+        (4.5, -0.5) --
+        (6.5, -0.7) --                   
+        (6.5, -1.8) --                   
+        (9.0, -1.8) --                   
+        (10.5, -0.6);
 
-    \node[red, font=\small\bfseries] at (8, -2.8) {Frequent Border};
+    \node[red, font=\small\bfseries] at (8.5, -5.2) {Frequent Border};
 
     \end{tikzpicture}
 \end{frame}
