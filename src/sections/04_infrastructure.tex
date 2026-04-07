@@ -7,71 +7,80 @@
     Before 2004, "Big Data" was handled by massive, expensive vertical mainframes. 
 
     \begin{columns}
-        \begin{column}{0.62\textwidth}
+        \begin{column}{0.65\textwidth}
             \begin{itemize}
-                \item \textbf{The "Single Giant" (Vertical Scaling):} 
-                    \begin{itemize}
-                        \item \textbf{The Cost Barrier:} In the 90s, RAM was \textbf{>\$50 per Megabyte}.
-                        \item \textbf{The Limit:} Eventually, you hit a physical and financial ceiling.
-                    \end{itemize}
-                \vfill
-                \item \textbf{The "Army of Ants" (Horizontal Scaling):} 
-                    \begin{itemize}
-                        \item Instead of one giant, use 1,000 "cheap" normal PCs linked together.
-                    \end{itemize}
+                \item \textbf{The "Single Giant" (Vertical):} 
+                    Hitting the physical and financial ceiling of a single machine.
+                \item \textbf{The "Army of Ants" (Horizontal):} 
+                    Linking 1,000 "commodity" PCs to act as one.
             \end{itemize}
+            \vfill
+            \begin{alertblock}{Economic Necessity}
+                In the 90s, RAM was \textbf{>\$50/MB}. We switched because scaling vertically became \textbf{bankrupting}.
+            \end{alertblock}
         \end{column}
         
-        \begin{column}{0.38\textwidth}
+        \begin{column}{0.35\textwidth}
             \centering
-            % --- TikZ FLOPPY DISK DIAGRAM (Clean Version) ---
-            \begin{tikzpicture}[scale=0.8]
-                % Main casing
-                \draw[thick, fill=gray!20] (0,0) rectangle (3.5, 3.3);
-                
-                % Upper label area (Text removed)
-                \draw[fill=white] (0.2, 2.0) rectangle (3.3, 3.1);
-                
-                % Lower shutter mechanism area
-                \draw[thick, fill=black!80] (1.3, 0) rectangle (2.8, 1.8);
-                \draw[fill=gray!50] (1.5, 0.2) rectangle (2.6, 1.6);
-                
-                % Right indent
-                \draw[thick, fill=gray!20] (3.5, 0.6) -- (3.2, 0.6) -- (3.2, 2.4) -- (3.5, 2.4);
-                
-                % Write-Protect Notch (bottom-left)
+            % --- TikZ Floppy (Scaled 1.6x) ---
+            \begin{tikzpicture}[scale=0.8] 
+                \draw[thick, fill=gray!20] (0,0) rectangle (3.2, 3.0);
+                \draw[fill=white] (0.2, 1.9) rectangle (3.0, 2.8);
+                \draw[thick, fill=black!80] (1.1, 0) rectangle (2.5, 1.6);
+                \draw[fill=gray!50] (1.3, 0.2) rectangle (2.3, 1.4);
                 \draw[rounded corners=1pt, fill=black] (0.1, 0.1) rectangle (0.4, 0.4);
-                
-                % Center spindle area
-                \draw[fill=gray!40] (0.9, 0.8) circle (0.3cm);
-                \draw[fill=black!60] (0.9, 0.8) circle (0.1cm);
             \end{tikzpicture}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- Slide 2: Google's Contributions ---
+\begin{frame}{Google's Contributions (2004)}
+    \begin{columns}
+        \begin{column}{0.2\textwidth}
+            \centering
+            % --- TikZ Light Bulb (Scaled 1.6x) ---
+            \begin{tikzpicture}[scale=1.0] 
+                \draw[yellow!80!orange, thick, fill=yellow!10] (0,0) circle (0.6);
+                \draw[thick] (-0.3,-0.6) rectangle (0.3,-0.9);
+                \draw[thick, fill=gray!40] (-0.2,-0.9) rectangle (0.2,-1.1);
+                \foreach \a in {0,45,...,315} \draw[orange, thick] (\a:0.8) -- (\a:1.1);
+            \end{tikzpicture}
+        \end{column}
+        \begin{column}{0.8\textwidth}
+            The \textit{"MapReduce"} paper by Dean \& Ghemawat:
+            \begin{itemize}
+                \item \textbf{Abstraction:} Simplified distributed math into Map/Reduce.
+                \item \textbf{Fault Tolerance:} Hardware failure is now a software problem.
+                \item \textbf{Data Locality:} "Move the computation, not the data."
+            \end{itemize}
         \end{column}
     \end{columns}
     
     \vfill
-    \begin{alertblock}{Economic Necessity}
-        We didn't switch because it was easier; we switched because the old way literally became \textbf{bankrupting} as data exploded.
+    \begin{alertblock}{The Catalyst for Innovation}
+        By sharing this blueprint, Google allowed the community to build \textbf{Apache Hadoop}, moving beyond the "Single Giant" era.
     \end{alertblock}
 \end{frame}
 
-% --- Slide 2: The Evolution of Speed ---
+% --- Slide 3: Evolution of Speed (Hadoop vs Spark) ---
 \begin{frame}{From the "Basement" to the "Desk"}
-    The evolution of Big Data is the story of moving data closer to the CPU.
-
-    \begin{itemize}
-        \item \textbf{Hadoop Era (2006): The "Basement" (Disk)}
+    \begin{columns}
+        \begin{column}{0.75\textwidth}
             \begin{itemize}
-                \item Data lived on Hard Drives.
-                \item \textbf{Latency:} Like a librarian walking to the basement for every book.
+                \item \textbf{Hadoop Era (2006):} Relied on Disk. Like a librarian walking to the \textbf{basement} for every book.
+                \item \textbf{Spark Era (2014):} Uses RAM (RDDs). The librarian keeps everything on the \textbf{desk}.
             \end{itemize}
-        \vfill
-        \item \textbf{Spark Era (2014): The "Desk" (RAM)}
-            \begin{itemize}
-                \item RAM became a commodity. Data now lives in Memory.
-                \item \textbf{Efficiency:} The librarian keeps all the books right on the desk.
-            \end{itemize}
-    \end{itemize}
+        \end{column}
+        \begin{column}{0.25\textwidth}
+            \centering
+            % --- TikZ Level Up (Scaled 1.6x) ---
+            \begin{tikzpicture}[scale=0.65] 
+                \draw[cyan, line width=4pt, ->] (0,0) -- (0,3);
+                \node[cyan, font=\small\bfseries, align=center] at (0,3.6) {LEVEL\\UP};
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
 
     \vfill
     \begin{table}
@@ -80,90 +89,26 @@
         \begin{tabular}{|l|c|c|}
             \hline
             \textbf{Feature} & \textbf{Hadoop (Disk)} & \textbf{Spark (RAM)} \\ \hline
-            RAM Cost (approx) & \$10 / MB & \textbf{\$0.01 / MB} \\ \hline
             Processing Speed & 1x & \textbf{100x Faster} \\ \hline
-            Data Access & Sequential/Slow & \textbf{Random/Instant} \\ \hline
+            Data Access & Sequential & \textbf{Instant (RDD)} \\ \hline
         \end{tabular}
     \end{table}
 \end{frame}
 
-% --- Slide 3: Spark RDDs and Broadcasting ---
-\begin{frame}{Apache Spark Architecture}
+% --- Slide 4: Spark Architecture \& The New Bottleneck ---
+\begin{frame}{Spark Architecture \& The New Bottleneck}
     \begin{itemize}
-        \item \textbf{RDD (Resilient Distributed Dataset):}
-            \begin{itemize}
-                \item Database is partitioned across the cluster's RAM.
-            \end{itemize}
-        \item \textbf{The Broadcast Pattern:}
-            \begin{itemize}
-                \item The Driver node generates the candidates ($C_k$).
-                \item It \textbf{broadcasts} them once to every worker's RAM.
-            \end{itemize}
+        \item \textbf{The Setup:} Database partitioned across the cluster's RAM.
+        \item \textbf{The Pattern:} Candidates ($C_k$) are broadcast to every worker.
     \end{itemize}
 
     \vfill
-    \begin{alertblock}{The New Bottleneck}
-        Now that data is on the "Desk" (RAM), the disk is no longer the problem. The bottleneck shifts to the \textbf{CPU} trying to search through millions of candidates.
+    \begin{alertblock}{The CPU Wall}
+        Data is now in RAM, so the disk is no longer the problem. The new bottleneck is the \textbf{CPU} searching millions of candidates per second.
     \end{alertblock}
-\end{frame}
-
-% --- Slide 4: The Traditional Trie (The "Walk") ---
-\begin{frame}{The Traditional Trie (Pointer-Based)}
-    \begin{columns}
-        \begin{column}{0.6\textwidth}
-            \begin{itemize}
-                \item \textbf{Mechanism:} Nodes are linked by pointers.
-                \item \textbf{The Scan:} CPU checks children one by one.
-                \item \textbf{The Penalty:} 
-                    \begin{itemize}
-                        \item $O(\text{branching factor})$ search.
-                        \item \textbf{Cache Misses:} CPU "stutters" while waiting.
-                    \end{itemize}
-            \end{itemize}
-        \end{column}
-        \begin{column}{0.4\textwidth}
-            \centering
-            \begin{tikzpicture}[scale=0.8, every node/.style={draw,circle,font=\tiny}]
-                \node {root} 
-                    child {node {a}} 
-                    child {node {b}} 
-                    child {node {c} child {node {d}}};
-            \end{tikzpicture}
-        \end{column}
-    \end{columns}
-\end{frame}
-
-% --- Slide 5: The Solution: Hash Table Trie (HTT) ---
-\begin{frame}{The "Teleporter": Hash Table Trie}
-    \begin{block}{The Mechanism}
-        Every node contains a \textbf{Hash Table} instead of a list.
-        \begin{itemize}
-            \item \textbf{Key:} Item ID $\to$ \textbf{Value:} Pointer to Child.
-        \end{itemize}
-    \end{block}
 
     \vfill
-    \begin{itemize}
-        \item \textbf{Complexity:} Reduced from $O(b)$ to \textbf{$O(1)$}.
-        \item \textbf{The "Teleport":} Use the Item ID to jump directly to data.
-        \item \textbf{Result:} Maximize CPU efficiency; no idling during lookups.
-    \end{itemize}
-\end{frame}
-
-% --- Slide 6: Summary of Evolution ---
-\begin{frame}{Infrastructure Evolution Summary}
-    \centering
-    \begin{tabular}{|l|c|c|c|}
-        \hline
-        \textbf{Metric} & \textbf{Mainframe} & \textbf{Hadoop} & \textbf{Spark + HTT} \\ \hline
-        \textbf{Cost} & \$\$\$\$\$ & \$ & \$ \\ \hline
-        \textbf{Storage} & Single Disk & HDFS (Disk) & \textbf{RAM (RDD)} \\ \hline
-        \textbf{Search} & Manual & Linear Scan & \textbf{Hash Jump} \\ \hline
-        \textbf{Speed} & Limited & 1x & \textbf{1000x} \\ \hline
-    \end{tabular}
-
-    \vfill
-    \begin{alertblock}{Infrastructure Thesis}
-        We evolved from buying bigger machines to smarter algorithms on distributed memory. HTT is the final gear in the Spark machine.
-    \end{alertblock}
+    \begin{center}
+        \footnotesize \itshape Coming up: A deep dive into the \textbf{Data Structures} that will solve this bottleneck...
+    \end{center}
 \end{frame}
