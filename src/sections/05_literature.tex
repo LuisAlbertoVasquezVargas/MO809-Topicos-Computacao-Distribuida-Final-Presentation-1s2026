@@ -56,14 +56,14 @@
     \end{alertblock}
 \end{frame}
 
-% --- Slide 3: Pruning Strategy: Bloom Filters ---
-\begin{frame}[t]{Probabilistic Pruning (R-Apriori)}
+% --- Slide 3: Pruning Strategy ---
+\begin{frame}[t]{Pruning Strategies}
     \begin{itemize}
-        \item \textbf{The Feature:} A space-efficient bit array used to test if an element is a member of a set.
+        \item \textbf{The Goal:} Reduce the number of candidate itemsets that need to be counted.
         \item \textbf{The Logic:}
         \begin{itemize}
-            \item \small \textbf{Fast Rejection:} If the filter says "No," the itemset is definitely not frequent $\to$ \textbf{Discard instantly}.
-            \item \small \textbf{Verification:} Only "Maybe" results proceed to the actual counting phase.
+            \item \small If an itemset is identified as non-frequent through pruning, it is discarded instantly.
+            \item \small Only the remaining "potential" candidates proceed to the actual counting phase.
         \end{itemize}
     \end{itemize}
 
@@ -72,12 +72,12 @@
             \draw[thick] (0,0) rectangle (4,0.3);
             \foreach \x in {0.5,1.2,2.8,3.5} \fill[AlertColor] (\x-0.1,0.05) rectangle (\x+0.1,0.25);
             \draw[->, thick, red] (1.2,-0.5) -- (1.2,-0.1) node[midway, left, font=\tiny] {Check};
-            \node[font=\tiny, right] at (1.4,-0.4) {Result: False? $\to$ Pruned};
+            \node[font=\tiny, right] at (1.4,-0.4) {Result: Non-frequent? $\to$ Pruned};
         \end{tikzpicture}
     \end{center}
     
-    \begin{alertblock}{Design Focus}
-        \footnotesize R-Apriori focuses on reducing the total \textbf{candidate count} before the local search begins.
+    \begin{alertblock}{Focus}
+        \footnotesize Pruning effectively reduces the total \textbf{candidate count} before the search begins.
     \end{alertblock}
 \end{frame}
 
@@ -109,7 +109,6 @@
                     
                     \node[draw=none, circle=none, red, font=\tiny] at (0.8,-0.35) {Stall!};
 
-                    % HIDDEN STRUT: Ensures left block matches right block height
                     \path (0,0.5) -- (0,0.9); 
                 \end{tikzpicture}\\
                 Memory Fragmentation
@@ -132,16 +131,17 @@
     \end{columns}
 \end{frame}
 
-% --- Slide 5: The Core Research Question ---
-\begin{frame}[t]{The Core Research Question}
+% --- Slide 5: The Remaining Challenge ---
+\begin{frame}[t]{The Remaining Challenge}
     \begin{itemize}
-        \item \textbf{The Observation:} Most Spark-based FIM optimizations focus on \textit{global} pruning (like Bloom Filters) or partitioning.
-        \item \textbf{The Missing Piece:} Local search efficiency within an RDD partition is still hindered by legacy pointer-heavy tree navigations.
+        \item \textbf{The Progress:} Systems have moved from slow Disk I/O (Hadoop) to fast In-Memory RDDs (Spark).
+        \item \textbf{The Success:} Modern techniques already use \textbf{Pruning} to reduce the number of candidates.
+        \item \textbf{The Problem:} Even with fewer candidates, searching for itemsets inside an RDD partition is still the bottleneck.
     \end{itemize}
 
-    \vspace{0.8cm}
-    \begin{alertblock}{The Core Question}
+    \vspace{1.0cm}
+    \begin{alertblock}{The Main Question}
         \centering
-        \textit{"Can the Hash Table Trie (HTT) achieve $O(1)$ search jumps to significantly outperform traditional trees in a RAM-heavy RDD environment?"}
+        \large \textit{"If the data is already in RAM, why is the search inside the partition still the bottleneck?"}
     \end{alertblock}
 \end{frame}

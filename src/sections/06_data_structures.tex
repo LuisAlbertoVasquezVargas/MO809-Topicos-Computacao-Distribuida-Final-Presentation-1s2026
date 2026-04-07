@@ -1,58 +1,79 @@
 % sections/06_data_structures.tex
 
 \section{Proposed Data Structures}
-\begin{frame}{Data Structures: The Hash Tree}
-    \begin{itemize}
-        \item \textbf{Structure:} Internal nodes contain hash tables; leaves store candidate itemsets.
-        \item \textbf{Traversal Logic:} 
-        \begin{enumerate}
-            \item Hash the $i$-th item of a transaction.
-            \item Follow the corresponding branch.
-            \item Repeat until a leaf is reached and verify the candidate.
-        \end{enumerate}
-        \vfill
-        \item \textbf{The Spark Bottleneck:}
-        \begin{itemize}
-            \item \textbf{High Collision:} Multiple itemsets mapping to the same leaf force slow linear searches.
-            \item \textbf{CPU Overhead:} Repeated hashing at every level is expensive when scaled across RDD partitions.
-        \end{itemize}
-    \end{itemize}
-\end{frame}
 
-\begin{frame}{Data Structures: The Trie (Prefix Tree)}
-    \begin{itemize}
-        \item \textbf{Structure:} A rooted tree where each node represents a single item.
-        \item \textbf{Mechanism:} 
-        \begin{itemize}
-            \item Paths from root to leaf represent full itemsets.
-            \item Common prefixes are shared, reducing redundant storage.
-        \end{itemize}
-        \vfill
-        \item \textbf{Advantage in RDDs:}
-        \begin{itemize}
-            \item \textbf{Zero Hashing:} Navigates purely by pointers/references.
-            \item \textbf{Predictable Traversal:} If a prefix isn't in the transaction, the entire branch is pruned instantly.
-            \item \textit{Trade-off:} Searching for a child node among many siblings can become $O(k)$ where $k$ is the alphabet size.
-        \end{itemize}
-    \end{itemize}
-\end{frame}
-
-\begin{frame}{Data Structures: The Hash Table Trie}
-    \begin{itemize}
-        \item \textbf{The Hybrid Concept:} 
-        \begin{itemize}
-            \item A Trie where each node uses a \textbf{local Hash Table} to store its children.
-        \end{itemize}
-        \vfill
-        \item \textbf{Why it dominates in Spark:}
-        \begin{itemize}
-            \item \textbf{Constant Time ($O(1)$):} Finding the next item in a sequence doesn't require scanning a list of siblings.
-            \item \textbf{CPU Efficiency:} It combines the pruning power of a Trie with the lookup speed of Hashing.
-            \item \textbf{Memory-Speed Tradeoff:} Uses more RAM than a standard Trie, but in an RDD environment, RAM is exactly what we have to spare.
-        \end{itemize}
-    \end{itemize}
+% --- SLIDE 1: HASH TREE ---
+\begin{frame}{Data Structures: The Hash Tree (Hadoop Era)}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{Architecture}
+            \begin{itemize}
+                \item Internal nodes: Fixed-size Hash Tables.
+                \item Leaves: Store candidate itemsets.
+                \item \textit{Logic:} To find $\{i_1, i_2\}$, hash $i_1$ to find child, then hash $i_2$.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{The Spark Bottleneck}
+            \begin{itemize}
+                \item[\color{red}\ding{55}] \textbf{Collision Degradation:} High-density data causes leaf buckets to overflow.
+                \item[\color{red}\ding{55}] \textbf{CPU Waste:} Redundant \texttt{hash()} calls for every transaction row.
+            \end{itemize}
+        \end{column}
+    \end{columns}
     \vfill
-    \begin{alertblock}{The Verdict}
-        The Hash Table Trie fixes the ``branching bottleneck'' of standard Tries while maintaining better cache locality than traditional Hash Trees.
+    \begin{center}
+        \textit{Verdict: Smart for disk-based MapReduce; too slow for RAM-based Spark.}
+    \end{center}
+\end{frame}
+
+% --- SLIDE 2: TRIE ---
+\begin{frame}{Data Structures: The Trie (The Structural Optimizer)}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{Prefix Sharing}
+            \begin{itemize}
+                \item Nodes represent unique items.
+                \item Paths represent itemsets.
+                \item Common prefixes (e.g., $\{A, B, C\}$ and $\{A, B, D\}$) share memory.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{The Sibling Problem}
+            \begin{itemize}
+                \item[\color{orange}\ding{51}] \textbf{Zero Hashing:} Pure pointer navigation.
+                \item[\color{red}\ding{55}] \textbf{Search Latency:} Finding a specific child among $k$ siblings requires $O(\log k)$ or $O(k)$ scan.
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    \vfill
+    % 
+\end{frame}
+
+% --- SLIDE 3: HASH TABLE TRIE ---
+\begin{frame}{Data Structures: The Hash Table Trie (HTT)}
+    \begin{itemize}
+        \item \textbf{The Hybrid Concept:} A Trie where every node's "children-pointer-array" is replaced by a \textbf{Local Hash Table}.
+    \end{itemize}
+    
+    \begin{table}[]
+        \centering
+        \small
+        \begin{tabular}{l|l|l}
+            \hline
+            \textbf{Feature} & \textbf{Standard Trie} & \textbf{Hash Table Trie (Proposed)} \\ \hline
+            Sibling Access & $O(\log k)$ (Binary Search) & \textbf{$O(1)$ (Direct Mapping)} \\ 
+            Traversal Time & $O(L \cdot \log k)$ & \textbf{$O(L)$} \\ 
+            Memory Usage & Moderate (Arrays) & High (Hash Overhead) \\ \hline
+        \end{tabular}
+    \end{table}
+
+    \begin{itemize}
+        \item \textbf{The RDD Reality:} We trade RAM (which is abundant in Spark clusters) for CPU cycles (the primary bottleneck during FIM).
+    \end{itemize}
+    
+    \vfill
+    \begin{alertblock}{Section 06 Conclusion}
+        The HTT ensures that the "Find-Child" operation remains constant time regardless of the dataset's dimensionality.
     \end{alertblock}
 \end{frame}
