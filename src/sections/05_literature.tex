@@ -1,6 +1,6 @@
 \section{Literature Overview}
 
-% --- Slide 1: The FIM Landscape (The Rollback Version) ---
+% --- Slide 1: The FIM Landscape ---
 \begin{frame}[t]{The Evolution of FIM Environments}
     \vspace{0.2cm}
     Before addressing the HTT, we must categorize how FIM has adapted to shifting hardware constraints:
@@ -81,7 +81,7 @@
     \end{alertblock}
 \end{frame}
 
-% --- Slide 4: Specialized Data Structure Innovations ---
+% --- Slide 4: Data Structure Innovations (Balanced Height Version) ---
 \begin{frame}[t]{Data Structures in Related Work}
     Beyond global pruning, researchers explored local memory-mapping:
     
@@ -96,23 +96,35 @@
         \begin{column}{0.48\textwidth}
             \begin{alertblock}{Pointer-Based (Legacy)}
                 \scriptsize \centering
-                \begin{tikzpicture}[scale=0.6]
-                    \node[circle,draw,inner sep=1pt] (a) at (0,0) {};
-                    \node[circle,draw,inner sep=1pt] (b) at (-0.8,-0.8) {};
-                    \node[circle,draw,inner sep=1pt] (c) at (0.8,-0.8) {};
-                    \draw[->,red,thick] (a) -- (b); \draw[->,red,thick] (a) -- (c);
-                    \node[red, font=\tiny] at (0.8,-0.2) {Stall!};
+                \begin{tikzpicture}[scale=1.1]
+                    \tikzset{every node/.style={draw, circle, inner sep=2.5pt}}
+                    \tikzset{every path/.style={->,red,thick}}
+                    
+                    \node (a) at (0,0.6) {};
+                    \node (b) at (-0.6,0.0) {};
+                    \node (c) at (0.6,0.0) {};
+                    
+                    \draw (a) -- (b); 
+                    \draw (a) -- (c);
+                    
+                    \node[draw=none, circle=none, red, font=\tiny] at (0.8,-0.35) {Stall!};
+
+                    % HIDDEN STRUT: Ensures left block matches right block height
+                    \path (0,0.5) -- (0,0.9); 
                 \end{tikzpicture}\\
                 Memory Fragmentation
             \end{alertblock}
         \end{column}
+        
         \begin{column}{0.48\textwidth}
             \begin{alertblock}{Direct Access (Proposed)}
                 \scriptsize \centering
-                \begin{tikzpicture}[scale=0.6]
+                \begin{tikzpicture}[scale=1.0]
                     \draw (0,-0.4) grid (2,0.1);
-                    \draw[->,blue,thick] (0.5,0.6) -- (0.5,0.1);
-                    \node[blue, font=\tiny] at (1.2,0.5) {$O(1)$ Jump};
+                    \draw[->,blue,thick] (0.5,1.0) -- (0.5,0.1);
+                    \node[blue, font=\scriptsize] at (1.4,0.9) {$O(1)$ Jump};
+                    
+                    \path[use as bounding box] (-0.2,-0.6) rectangle (2.2,1.2);
                 \end{tikzpicture}\\
                 Cache-Friendly
             \end{alertblock}
